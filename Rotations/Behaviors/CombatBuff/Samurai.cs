@@ -6,7 +6,9 @@ namespace UltimaCR.Rotations
     {
         public override async Task<bool> CombatBuff()
         {
-            return false;
+            if (await Goad()) return true;
+            if (await ThirdEye()) return true;
+            return await Invigorate();
         }
     }
 }

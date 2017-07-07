@@ -114,6 +114,40 @@ namespace UltimaCR.Spells.CrossClass
                                });
                 }
             }
+            private Spell _goad;
+            public Spell Goad
+            {
+                get {
+                    return _goad ??
+                           (_goad =
+                               new Spell
+                               {
+                                   Name = "Goad",
+                                   ID = 7543,
+                                   Level = 48,
+                                   GCDType = GCDType.On,
+                                   SpellType = SpellType.Defensive,
+                                   CastType = CastType.Target
+                               });
+                }
+            }
+            private Spell _bloodbath;
+            public Spell Bloodbath
+            {
+                get {
+                    return _bloodbath ??
+                           (_bloodbath =
+                               new Spell
+                               {
+                                   Name = "Bloodbath",
+                                   ID = 7542,
+                                   Level = 8,
+                                   GCDType = GCDType.On,
+                                   SpellType = SpellType.Damage,
+                                   CastType = CastType.Self
+                               });
+                }
+            }
             /*private Spell _haymaker;
             public Spell Haymaker
             {

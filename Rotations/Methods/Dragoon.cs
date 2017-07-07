@@ -268,13 +268,13 @@ namespace UltimaCR.Rotations
         {
             if (PartyManager.IsInParty && Core.Player.HasAura(MySpells.HeavyThrust.Name,true))
             {
-                var target = Helpers.HealManager.FirstOrDefault(hm =>
-                hm.IsDPS() && hm.Distance2D(Core.Player) <= 6);
+                var target = Helpers.PartyMembers.FirstOrDefault(pm =>
+                pm.IsDPS() && pm.Distance2D(Core.Player) <= 6);
                 
                 if (target == null)
                 {
-                    target = Helpers.HealManager.FirstOrDefault(hm =>
-                    hm.IsTank() && hm.Distance2D(Core.Player) <= 6);
+                    target = Helpers.PartyMembers.FirstOrDefault(pm =>
+                    pm.IsTank() && pm.Distance2D(Core.Player) <= 6);
 
                     if (target != null)
                     {

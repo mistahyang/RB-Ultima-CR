@@ -28,7 +28,6 @@ namespace UltimaCR.Rotations
             if (Ultima.UltSettings.SingleTarget)
             {
                 if (await Jump()) return true;
-                if (await DragonSight()) return true;
 		        if (await BloodOfTheDragon()) return true;
                 if (await BloodForBlood()) return true;                
             	if (await BattleLitany()) return true;

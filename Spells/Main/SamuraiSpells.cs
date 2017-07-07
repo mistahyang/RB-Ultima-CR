@@ -51,6 +51,25 @@ namespace UltimaCR.Spells.Main
                            });
             }
         }
+        //Hissatsu: Kaiten Action Id:7494
+        private Spell _kaiten;
+        public Spell Kaiten
+        {
+            get
+            {
+                return _kaiten ??
+                       (_kaiten =
+                           new Spell
+                           {
+                               Name = "Kaiten",
+                               ID = 7494,
+                               Level = 52,
+                               GCDType = GCDType.On,
+                               SpellType = SpellType.Buff,
+                               CastType = CastType.Self
+                           });
+            }
+        }
         private Spell _shifu;
         public Spell Shifu
         {
@@ -315,6 +334,44 @@ namespace UltimaCR.Spells.Main
                                Name = "Iaijutsu",
                                ID = 7867,
                                Level = 30,
+                               GCDType = GCDType.On,
+                               SpellType = SpellType.Damage,
+                               CastType = CastType.Target
+                           });
+            }
+        }
+        //Merciful Eyes Action Id:7502
+        private Spell _mercifuleyes;
+        public Spell MercifulEyes
+        {
+            get
+            {
+                return _mercifuleyes ??
+                       (_mercifuleyes =
+                           new Spell
+                           {
+                               Name = "Merciful Eyes",
+                               ID = 7502,
+                               Level = 6,
+                               GCDType = GCDType.On,
+                               SpellType = SpellType.Defensive,
+                               CastType = CastType.Self
+                           });
+            }
+        }
+        //Hissatsu: Shinten Action:7490
+        private Spell _shinten;
+        public Spell Shinten
+        {
+            get
+            {
+                return _shinten ??
+                       (_shinten =
+                           new Spell
+                           {
+                               Name = "Hissatsu: Shinten",
+                               ID = 7490,
+                               Level = 62,
                                GCDType = GCDType.On,
                                SpellType = SpellType.Damage,
                                CastType = CastType.Target

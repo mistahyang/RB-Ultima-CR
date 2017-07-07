@@ -46,61 +46,81 @@ namespace UltimaCR.Rotations
 
         private async Task<bool> StraightShot()
         {
-            if (Ultima.LastSpell.Name != MySpells.StraightShot.Name)
-            {
-                if (
-		    !Core.Player.HasAura(865) &&
-		    !Core.Player.HasAura(MySpells.StraightShot.Name, true, 3350) ||
-			
-		    !Core.Player.InCombat &&
-		    !ActionManager.HasSpell(MySpells.IronJaws.Name) &&
-		    Core.Player.HasAura(865) &&
-		    !Core.Player.HasAura(MySpells.StraightShot.Name, true, 4250) ||
-
-		    !Core.Player.InCombat &&
-		    ActionManager.HasSpell(MySpells.IronJaws.Name) &&
-		    Core.Player.HasAura(865) &&
-		    !Core.Player.HasAura(MySpells.StraightShot.Name, true, 4250) ||
-
-		    Core.Player.InCombat &&
-		    !ActionManager.HasSpell(MySpells.IronJaws.Name) &&
-		    Core.Player.HasAura(865) &&
-		    !Core.Player.HasAura(MySpells.StraightShot.Name, true, 4250) ||
-
-		    Core.Player.InCombat &&
-		    ActionManager.HasSpell(MySpells.IronJaws.Name) &&
-		    Core.Player.HasAura(865) &&
-		    !Core.Player.HasAura(MySpells.StraightShot.Name, true, 4250))
+            if (Ultima.LastSpell.Name != MySpells.StraightShot.Name && 
+                !Core.Player.HasAura(MySpells.StraightShot.Name, true, 3350))
                 {
                     return await MySpells.StraightShot.Cast();
-		}
-            }
+		        }
             return false;
         }
 
         private async Task<bool> Songs()
         {
-                if ((ActionResourceManager.Bard.ActiveSong == ActionResourceManager.Bard.BardSong.None ||
-                ActionResourceManager.Bard.Timer <= new TimeSpan(0, 0, 0, 1, 0)) &&
+            if (ActionResourceManager.Bard.ActiveSong == ActionResourceManager.Bard.BardSong.None &&
                 Ultima.LastSpell.Name != MySpells.WanderersMinuet.Name &&
 		        Ultima.LastSpell.Name != MySpells.ArmysPaeon.Name &&
                 Ultima.LastSpell.Name != MySpells.MagesBallad.Name)
+            {
+                if (ActionManager.CanCast(MySpells.WanderersMinuet.Name, Core.Player.CurrentTarget))
                 {
-                    if (ActionManager.CanCast(MySpells.WanderersMinuet.Name, Core.Player.CurrentTarget))
-                    {
-                        return await MySpells.WanderersMinuet.Cast();
-                    }
+                    return await MySpells.WanderersMinuet.Cast();
+                }
 
-                    if (ActionManager.CanCast(MySpells.ArmysPaeon.Name, Core.Player.CurrentTarget))
-                    {
-                        return await MySpells.ArmysPaeon.Cast();
-                    }
+                if (ActionManager.CanCast(MySpells.ArmysPaeon.Name, Core.Player.CurrentTarget))
+                {
+                    return await MySpells.ArmysPaeon.Cast();
+                }
                     
-                    if (ActionManager.CanCast(MySpells.MagesBallad.Name, Core.Player.CurrentTarget))
-                    {
-                        return await MySpells.MagesBallad.Cast();
-                    }
-		        }
+                if (ActionManager.CanCast(MySpells.MagesBallad.Name, Core.Player.CurrentTarget))
+                {
+                    return await MySpells.MagesBallad.Cast();
+                }
+            }
+
+            if ((ActionResourceManager.Bard.ActiveSong == ActionResourceManager.Bard.BardSong.WanderersMinuet ||
+                ActionResourceManager.Bard.ActiveSong == ActionResourceManager.Bard.BardSong.MagesBallad) &&
+                ActionResourceManager.Bard.Timer <= new TimeSpan(0, 0, 0, 1, 0) &&
+                Ultima.LastSpell.Name != MySpells.WanderersMinuet.Name &&
+		        Ultima.LastSpell.Name != MySpells.ArmysPaeon.Name &&
+                Ultima.LastSpell.Name != MySpells.MagesBallad.Name)
+            {
+                if (ActionManager.CanCast(MySpells.WanderersMinuet.Name, Core.Player.CurrentTarget))
+                {
+                    return await MySpells.WanderersMinuet.Cast();
+                }
+                    
+                if (ActionManager.CanCast(MySpells.MagesBallad.Name, Core.Player.CurrentTarget))
+                {
+                    return await MySpells.MagesBallad.Cast();
+                }
+
+                if (ActionManager.CanCast(MySpells.ArmysPaeon.Name, Core.Player.CurrentTarget))
+                {
+                    return await MySpells.ArmysPaeon.Cast();
+                }
+		    }
+
+            if ((ActionResourceManager.Bard.ActiveSong == ActionResourceManager.Bard.BardSong.ArmysPaeon) &&
+                ActionResourceManager.Bard.Timer <= new TimeSpan(0, 0, 0, 9, 0) &&
+                Ultima.LastSpell.Name != MySpells.WanderersMinuet.Name &&
+		        Ultima.LastSpell.Name != MySpells.ArmysPaeon.Name &&
+                Ultima.LastSpell.Name != MySpells.MagesBallad.Name)
+            {
+                if (ActionManager.CanCast(MySpells.WanderersMinuet.Name, Core.Player.CurrentTarget))
+                {
+                    return await MySpells.WanderersMinuet.Cast();
+                }
+
+                if (ActionManager.CanCast(MySpells.MagesBallad.Name, Core.Player.CurrentTarget))
+                {
+                    return await MySpells.MagesBallad.Cast();
+                }
+
+                if (ActionManager.CanCast(MySpells.ArmysPaeon.Name, Core.Player.CurrentTarget))
+                {
+                    return await MySpells.ArmysPaeon.Cast();
+                }
+		    }
 
             return false;
         }
@@ -109,10 +129,13 @@ namespace UltimaCR.Rotations
         {
             if (Core.Player.HasAura("Straighter Shot"))
             {
-                if (ActionManager.HasSpell(MySpells.RefulgentArrow.Name) &&
-                    Core.Player.HasAura(MySpells.StraightShot.Name, true, 4250))
+                if (ActionManager.HasSpell(MySpells.RefulgentArrow.Name))
                 {
-                    return await MySpells.RefulgentArrow.Cast();
+                    if (DataManager.GetSpellData(MySpells.Barrage.ID).Cooldown > new TimeSpan(0, 0, 0, 4)) /*&&
+                    Core.Player.HasAura(MySpells.StraightShot.Name, true, 4250)*/
+                    {
+                        return await MySpells.RefulgentArrow.Cast();
+                    }
                 }
                 else
                 {
@@ -136,30 +159,20 @@ namespace UltimaCR.Rotations
 
         private async Task<bool> RagingStrikes()
         {
-            if (Core.Player.HasTarget &&
-		Core.Player.InCombat &&
-		Core.Player.TargetDistance(25, false) &&
-		Ultima.LastSpell.Name != MySpells.CrossClass.Invigorate.Name &&
-		Ultima.LastSpell.Name != MySpells.HawksEye.Name &&
-		Ultima.LastSpell.Name != MySpells.FoeRequiem.Name &&
-		Ultima.LastSpell.Name != MySpells.Sidewinder.Name &&
-		Ultima.LastSpell.Name != MySpells.RainOfDeath.Name &&
-		Ultima.LastSpell.Name != MySpells.Bloodletter.Name &&
-		Ultima.LastSpell.Name != MySpells.RepellingShot.Name)
+            if (Ultima.LastSpell.Name != MySpells.RagingStrikes.Name &&
+		    Ultima.LastSpell.Name != MySpells.FoeRequiem.Name &&
+		    Ultima.LastSpell.Name != MySpells.Sidewinder.Name &&
+		    Ultima.LastSpell.Name != MySpells.RainOfDeath.Name &&
+		    Ultima.LastSpell.Name != MySpells.Bloodletter.Name &&
+		    Ultima.LastSpell.Name != MySpells.WanderersMinuet.Name &&
+		    Ultima.LastSpell.Name != MySpells.ArmysPaeon.Name &&
+            Ultima.LastSpell.Name != MySpells.MagesBallad.Name &&
+            Ultima.LastSpell.Name != MySpells.NaturesMinne.Name &&
+            Ultima.LastSpell.Name != MySpells.BattleVoice.Name &&
+            Ultima.LastSpell.Name != MySpells.EmpyrealArrow.Name &&
+            Core.Player.HasAura(MySpells.StraightShot.Name,true,4250))
             {
-                if (Ultima.UltSettings.SmartTarget &&
-		    Helpers.EnemiesNearTarget(8) > 5 &&
-		    Core.Player.CurrentTarget.CurrentHealthPercent > 70 ||
-
-		    Ultima.UltSettings.SingleTarget &&
-		    Core.Player.CurrentTarget.CurrentHealth <= Core.Player.MaxHealth &&
-		    Core.Player.CurrentTarget.CurrentHealthPercent > 70 ||
-
-		    Ultima.UltSettings.SingleTarget &&
-		    Core.Player.CurrentTarget.CurrentHealth > Core.Player.MaxHealth)
-                {
-                    return await MySpells.RagingStrikes.Cast();
-		}
+                return await MySpells.RagingStrikes.Cast();
             }
             return false;
         }
@@ -304,19 +317,16 @@ namespace UltimaCR.Rotations
 
         private async Task<bool> MiserysEnd()
         {
-            if (Ultima.UltSettings.BardMiserysEnd &&
-		Ultima.LastSpell.Name != MySpells.CrossClass.Invigorate.Name &&
-		Ultima.LastSpell.Name != MySpells.HawksEye.Name &&
-		Ultima.LastSpell.Name != MySpells.RagingStrikes.Name &&
-		Ultima.LastSpell.Name != MySpells.CrossClass.BloodForBlood.Name &&
-		Ultima.LastSpell.Name != MySpells.CrossClass.InternalRelease.Name &&
-		Ultima.LastSpell.Name != MySpells.FoeRequiem.Name &&
-		Ultima.LastSpell.Name != MySpells.Sidewinder.Name &&
-		Ultima.LastSpell.Name != MySpells.RainOfDeath.Name &&
-		Ultima.LastSpell.Name != MySpells.Bloodletter.Name &&
-		Ultima.LastSpell.Name != MySpells.RepellingShot.Name &&
-		Ultima.LastSpell.Name != MySpells.BluntArrow.Name &&
-		Ultima.LastSpell.Name != MySpells.FlamingArrow.Name)
+            if (Ultima.LastSpell.Name != MySpells.RagingStrikes.Name &&
+		    Ultima.LastSpell.Name != MySpells.Sidewinder.Name &&
+		    Ultima.LastSpell.Name != MySpells.RainOfDeath.Name &&
+		    Ultima.LastSpell.Name != MySpells.Bloodletter.Name &&
+		    Ultima.LastSpell.Name != MySpells.WanderersMinuet.Name &&
+		    Ultima.LastSpell.Name != MySpells.ArmysPaeon.Name &&
+            Ultima.LastSpell.Name != MySpells.MagesBallad.Name &&
+            Ultima.LastSpell.Name != MySpells.NaturesMinne.Name &&
+            Ultima.LastSpell.Name != MySpells.BattleVoice.Name &&
+            Ultima.LastSpell.Name != MySpells.EmpyrealArrow.Name)
             {
                 return await MySpells.MiserysEnd.Cast();
             }
@@ -330,18 +340,16 @@ namespace UltimaCR.Rotations
 
         private async Task<bool> Bloodletter()
         {
-            if (Ultima.LastSpell.Name != MySpells.CrossClass.Invigorate.Name &&
-		Ultima.LastSpell.Name != MySpells.HawksEye.Name &&
-		Ultima.LastSpell.Name != MySpells.RagingStrikes.Name &&
-		Ultima.LastSpell.Name != MySpells.CrossClass.BloodForBlood.Name &&
-		Ultima.LastSpell.Name != MySpells.CrossClass.InternalRelease.Name &&
-		Ultima.LastSpell.Name != MySpells.FoeRequiem.Name &&
-		Ultima.LastSpell.Name != MySpells.MiserysEnd.Name &&
-		Ultima.LastSpell.Name != MySpells.Sidewinder.Name &&
-		Ultima.LastSpell.Name != MySpells.RainOfDeath.Name &&
-		Ultima.LastSpell.Name != MySpells.RepellingShot.Name &&
-		Ultima.LastSpell.Name != MySpells.BluntArrow.Name &&
-		Ultima.LastSpell.Name != MySpells.FlamingArrow.Name)
+            if (Ultima.LastSpell.Name != MySpells.RagingStrikes.Name &&
+		    Ultima.LastSpell.Name != MySpells.Sidewinder.Name &&
+		    Ultima.LastSpell.Name != MySpells.RainOfDeath.Name &&
+		    Ultima.LastSpell.Name != MySpells.Bloodletter.Name &&
+		    Ultima.LastSpell.Name != MySpells.WanderersMinuet.Name &&
+		    Ultima.LastSpell.Name != MySpells.ArmysPaeon.Name &&
+            Ultima.LastSpell.Name != MySpells.MagesBallad.Name &&
+            Ultima.LastSpell.Name != MySpells.NaturesMinne.Name &&
+            Ultima.LastSpell.Name != MySpells.BattleVoice.Name &&
+            Ultima.LastSpell.Name != MySpells.EmpyrealArrow.Name)
             {
                 return await MySpells.Bloodletter.Cast();
             }
@@ -441,11 +449,8 @@ namespace UltimaCR.Rotations
         private async Task<bool> FoeRequiem()
 	    {
             if (!Core.Target.HasAura(140) &&
-		        Core.Player.InCombat &&
-		        Helpers.EnemiesNearPlayer(20) > 0 &&
                 Core.Player.TargetDistance(20, false) &&
-		        Ultima.LastSpell.Name != MySpells.Barrage.Name &&
-		        Ultima.LastSpell.Name != MySpells.CrossClass.Invigorate.Name)
+		        Ultima.LastSpell.Name != MySpells.Barrage.Name)
 		
             {
                 if ((Core.Player.CurrentTarget.CurrentHealthPercent > 20 &&
@@ -453,10 +458,9 @@ namespace UltimaCR.Rotations
 
 		            (Core.Player.CurrentTarget.CurrentHealthPercent <= 20 &&
                     Core.Player.CurrentManaPercent > 40))
-
-                {
-                    return await MySpells.FoeRequiem.Cast();
-		        }
+                    {
+                        return await MySpells.FoeRequiem.Cast();
+		            }
             }
             return false;
         }
@@ -468,7 +472,17 @@ namespace UltimaCR.Rotations
 
         private async Task<bool> RainOfDeath()
         {
-            if (Helpers.EnemiesNearTarget(5) > 2)
+            if (Helpers.EnemiesNearTarget(5) > 2 &&
+                Ultima.LastSpell.Name != MySpells.RagingStrikes.Name &&
+		        Ultima.LastSpell.Name != MySpells.Sidewinder.Name &&
+		        Ultima.LastSpell.Name != MySpells.RainOfDeath.Name &&
+		        Ultima.LastSpell.Name != MySpells.Bloodletter.Name &&
+		        Ultima.LastSpell.Name != MySpells.WanderersMinuet.Name &&
+		        Ultima.LastSpell.Name != MySpells.ArmysPaeon.Name &&
+                Ultima.LastSpell.Name != MySpells.MagesBallad.Name &&
+                Ultima.LastSpell.Name != MySpells.NaturesMinne.Name &&
+                Ultima.LastSpell.Name != MySpells.BattleVoice.Name &&
+                Ultima.LastSpell.Name != MySpells.EmpyrealArrow.Name)
             {
                 return await MySpells.RainOfDeath.Cast();
             }
@@ -477,33 +491,36 @@ namespace UltimaCR.Rotations
 
         private async Task<bool> BattleVoice()
         {
-            if (Ultima.LastSpell.Name != MySpells.CrossClass.Invigorate.Name &&
-		Ultima.LastSpell.Name != MySpells.HawksEye.Name &&
-		Ultima.LastSpell.Name != MySpells.RagingStrikes.Name &&
-		Ultima.LastSpell.Name != MySpells.CrossClass.BloodForBlood.Name &&
-		Ultima.LastSpell.Name != MySpells.CrossClass.InternalRelease.Name &&
-		Ultima.LastSpell.Name != MySpells.MiserysEnd.Name &&
-		Ultima.LastSpell.Name != MySpells.Sidewinder.Name &&
-		Ultima.LastSpell.Name != MySpells.RainOfDeath.Name &&
-		Ultima.LastSpell.Name != MySpells.Bloodletter.Name &&
-		Ultima.LastSpell.Name != MySpells.RepellingShot.Name &&
-		Ultima.LastSpell.Name != MySpells.BluntArrow.Name &&
-		Ultima.LastSpell.Name != MySpells.FlamingArrow.Name &&
-		Core.Player.CurrentTarget.CurrentHealth > Core.Player.MaxHealth * 6 &&
-		Core.Player.HasTarget &&
-		Core.Player.InCombat &&
-		Core.Player.TargetDistance(25, false) &&
-                Core.Player.CurrentManaPercent >= 40 &&
-		Core.Player.HasAura(139))
-                {
-                    return await MySpells.BattleVoice.Cast();
-                }
-	    return false;
+            if (Ultima.LastSpell.Name != MySpells.RagingStrikes.Name &&
+		        Ultima.LastSpell.Name != MySpells.Sidewinder.Name &&
+		        Ultima.LastSpell.Name != MySpells.RainOfDeath.Name &&
+		        Ultima.LastSpell.Name != MySpells.Bloodletter.Name &&
+		        Ultima.LastSpell.Name != MySpells.WanderersMinuet.Name &&
+		        Ultima.LastSpell.Name != MySpells.ArmysPaeon.Name &&
+                Ultima.LastSpell.Name != MySpells.MagesBallad.Name &&
+                Ultima.LastSpell.Name != MySpells.NaturesMinne.Name &&
+                Ultima.LastSpell.Name != MySpells.BattleVoice.Name &&
+                Ultima.LastSpell.Name != MySpells.EmpyrealArrow.Name)
+            {
+                return await MySpells.BattleVoice.Cast();
+            }
+	        return false;
         }
 
         private async Task<bool> EmpyrealArrow()
         {
-            if (Core.Player.HasAura(MySpells.StraightShot.Name, true, 3250) || Core.Player.HasAura(128))
+            if (Core.Player.HasAura(MySpells.StraightShot.Name, true, 3250) &&
+            !ActionManager.CanCast(MySpells.RefulgentArrow.Name, Core.Player.CurrentTarget) &&
+            Ultima.LastSpell.Name != MySpells.RagingStrikes.Name &&
+		    Ultima.LastSpell.Name != MySpells.Sidewinder.Name &&
+		    Ultima.LastSpell.Name != MySpells.RainOfDeath.Name &&
+		    Ultima.LastSpell.Name != MySpells.Bloodletter.Name &&
+		    Ultima.LastSpell.Name != MySpells.WanderersMinuet.Name &&
+		    Ultima.LastSpell.Name != MySpells.ArmysPaeon.Name &&
+            Ultima.LastSpell.Name != MySpells.MagesBallad.Name &&
+            Ultima.LastSpell.Name != MySpells.NaturesMinne.Name &&
+            Ultima.LastSpell.Name != MySpells.BattleVoice.Name &&
+            Ultima.LastSpell.Name != MySpells.EmpyrealArrow.Name)
             {
                 return await MySpells.EmpyrealArrow.Cast();
             }
@@ -547,23 +564,24 @@ namespace UltimaCR.Rotations
 
         private async Task<bool> Sidewinder()
         {
-            if (Ultima.UltSettings.SingleTarget &&
-		!ActionManager.CanCast(MySpells.Barrage.Name, Core.Player) &&
-		Core.Player.CurrentTarget.CurrentHealth > Core.Player.MaxHealth &&
-		Core.Player.CurrentTarget.HasAura(MySpells.CausticBite.Name, true, 2000) &&
-        Core.Player.CurrentTarget.HasAura("Storm Bite", true, 2000) &&
-		!ActionManager.CanCast(MySpells.RagingStrikes.Name, Core.Player) &&
-		!ActionManager.CanCast(MySpells.HawksEye.Name, Core.Player) ||
-
-		!Ultima.UltSettings.SingleTarget &&
-		Core.Player.CurrentTarget.CurrentHealth > Core.Player.MaxHealth &&
-		Core.Player.CurrentTarget.HasAura(MySpells.CausticBite.Name, true, 2000) &&
-                Core.Player.CurrentTarget.HasAura("Storm Bite", true, 2000) ||
-
-		Core.Player.CurrentTarget.CurrentHealth <= Core.Player.MaxHealth)
-            {
-                return await MySpells.Sidewinder.Cast();
-            }
+            if (Ultima.LastSpell.Name != MySpells.RagingStrikes.Name &&
+		        Ultima.LastSpell.Name != MySpells.FoeRequiem.Name &&
+		        Ultima.LastSpell.Name != MySpells.Sidewinder.Name &&
+		        Ultima.LastSpell.Name != MySpells.RainOfDeath.Name &&
+		        Ultima.LastSpell.Name != MySpells.Bloodletter.Name &&
+		        Ultima.LastSpell.Name != MySpells.WanderersMinuet.Name &&
+		        Ultima.LastSpell.Name != MySpells.ArmysPaeon.Name &&
+                Ultima.LastSpell.Name != MySpells.MagesBallad.Name &&
+                Ultima.LastSpell.Name != MySpells.NaturesMinne.Name &&
+                Ultima.LastSpell.Name != MySpells.BattleVoice.Name &&
+                Ultima.LastSpell.Name != MySpells.EmpyrealArrow.Name &&
+                ((Core.Player.CurrentTarget.HasAura(MySpells.VenomousBite.Name, true, 4500) &&
+                Core.Player.CurrentTarget.HasAura(MySpells.Windbite.Name, true, 4500)) ||
+		        (Core.Player.CurrentTarget.HasAura(MySpells.CausticBite.Name, true, 4500) &&
+                Core.Player.CurrentTarget.HasAura("Storm Bite", true, 4500))))
+                {
+                    return await MySpells.Sidewinder.Cast();
+                }
             return false;
         }
 

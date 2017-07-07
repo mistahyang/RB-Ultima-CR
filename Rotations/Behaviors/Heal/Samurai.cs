@@ -6,7 +6,9 @@ namespace UltimaCR.Rotations
     {
         public override async Task<bool> Heal()
         {
-            return false;
+            if (await Bloodbath()) return true;
+            if (await MercifulEyes()) return true;
+            return await SecondWind();
         }
     }
 }

@@ -1,11 +1,13 @@
+using System;
 using Buddy.Coroutines;
 using ff14bot;
-using ff14bot.Managers;
-using ff14bot.Objects;
 using ff14bot.Enums;
+using ff14bot.Managers;
+using System.Linq;
 using System.Threading.Tasks;
 using UltimaCR.Spells;
 using UltimaCR.Spells.Main;
+using ff14bot.Objects;
 
 namespace UltimaCR.Rotations
 {
@@ -22,7 +24,11 @@ namespace UltimaCR.Rotations
 
         private async Task<bool> Hakaze()
         {
+            if (!Core.Player.HasAura(MySpells.Kaiten.Name))
+            {
                 return await MySpells.Hakaze.Cast();
+            }
+            return false;
         }
 
         private async Task<bool> Jinpu()
@@ -32,7 +38,8 @@ namespace UltimaCR.Rotations
                 if (/*(int)ActionResourceManager.Samurai.Sen != 2 || 
                 (int)ActionResourceManager.Samurai.Sen != 3 || 
                 (int)ActionResourceManager.Samurai.Sen != 6 &&*/
-                !Core.Player.HasAura(MySpells.Jinpu.Name, true, 20000))
+                !Core.Player.HasAura(MySpells.Jinpu.Name, true, 17000) &&
+                !Core.Player.HasAura(MySpells.Kaiten.Name))
                 {
                     return await MySpells.Jinpu.Cast();
                 }
@@ -47,7 +54,8 @@ namespace UltimaCR.Rotations
                 if (/*(int)ActionResourceManager.Samurai.Sen != 4 || 
                 (int)ActionResourceManager.Samurai.Sen != 5 || 
                 (int)ActionResourceManager.Samurai.Sen != 6 &&*/
-                !Core.Player.HasAura(MySpells.Shifu.Name, true, 20000))
+                !Core.Player.HasAura(MySpells.Shifu.Name, true, 17000) &&
+                !Core.Player.HasAura(MySpells.Kaiten.Name))
                 {
                     return await MySpells.Shifu.Cast();
                 }
@@ -58,7 +66,11 @@ namespace UltimaCR.Rotations
         private async Task<bool> Yukikaze()
         {
             if (ActionManager.LastSpell.Name == MySpells.Hakaze.Name &&
-            (int)ActionResourceManager.Samurai.Sen == 6)
+            ((int)ActionResourceManager.Samurai.Sen == 6 ||
+            (Core.Player.HasAura(MySpells.Shifu.Name, true, 15000) &&
+            Core.Player.HasAura(MySpells.Jinpu.Name, true, 15000) &&
+            !Core.Player.CurrentTarget.HasAura("Slashing Resistance Down", true, 20000))) &&
+            !Core.Player.HasAura(MySpells.Kaiten.Name))
             {
                 return await MySpells.Yukikaze.Cast();
             }
@@ -67,7 +79,8 @@ namespace UltimaCR.Rotations
 
         private async Task<bool> Gekko()
 	    {
-            if (ActionManager.LastSpell.Name == MySpells.Jinpu.Name)
+            if (ActionManager.LastSpell.Name == MySpells.Jinpu.Name &&
+            !Core.Player.HasAura(MySpells.Kaiten.Name))
 	        {
                 return await MySpells.Gekko.Cast();
             }
@@ -76,7 +89,8 @@ namespace UltimaCR.Rotations
 
         private async Task<bool> Kasha()
         {
-            if (ActionManager.LastSpell.Name == MySpells.Shifu.Name)
+            if (ActionManager.LastSpell.Name == MySpells.Shifu.Name &&
+            !Core.Player.HasAura(MySpells.Kaiten.Name))
 	        {
                 return await MySpells.Kasha.Cast();
             }
@@ -87,7 +101,8 @@ namespace UltimaCR.Rotations
         {
             if (Helpers.EnemiesNearTarget(8) > 4 && 
             Core.Player.HasAura(MySpells.Shifu.Name, true, 4500) &&
-            Core.Player.HasAura(MySpells.Jinpu.Name, true, 4500))
+            Core.Player.HasAura(MySpells.Jinpu.Name, true, 4500) &&
+            !Core.Player.HasAura(MySpells.Kaiten.Name))
             {
                 return await MySpells.Fuga.Cast();
             }
@@ -96,7 +111,9 @@ namespace UltimaCR.Rotations
 
         private async Task<bool> Mangetsu()
         {
-            if (ActionManager.LastSpell.Name == MySpells.Fuga.Name && Helpers.EnemiesNearTarget(8) > 4)
+            if (ActionManager.LastSpell.Name == MySpells.Fuga.Name && 
+            Helpers.EnemiesNearTarget(8) > 4 &&
+            !Core.Player.HasAura(MySpells.Kaiten.Name))
             {
                     return await MySpells.Mangetsu.Cast();
             }
@@ -126,7 +143,8 @@ namespace UltimaCR.Rotations
         private async Task<bool> Oka()
         {
             if (ActionManager.LastSpell.Name == MySpells.Fuga.Name && Helpers.EnemiesNearTarget(8) > 4
-            && (int)ActionResourceManager.Samurai.Sen == 2)
+            && (int)ActionResourceManager.Samurai.Sen == 2 &&
+            !Core.Player.HasAura(MySpells.Kaiten.Name))
             {
                     return await MySpells.Oka.Cast();
             }
@@ -146,7 +164,8 @@ namespace UltimaCR.Rotations
 
         private async Task<bool> Ageha()
         {
-            if (ActionManager.CanCast(MySpells.Ageha.Name,Core.Player.CurrentTarget))
+            if (ActionManager.CanCast(MySpells.Ageha.Name,Core.Player.CurrentTarget) &&
+            !Core.Player.HasAura(MySpells.Kaiten.Name))
             {
                 return await MySpells.Ageha.Cast();
             }
@@ -161,7 +180,11 @@ namespace UltimaCR.Rotations
         private async Task<bool> Higanbana()
         {
             if (ActionManager.CanCast(MySpells.Higanbana.Name,Core.Player.CurrentTarget) && 
-            !Core.Player.CurrentTarget.HasAura(MySpells.Higanbana.Name, true, 4500))
+            !Core.Player.CurrentTarget.HasAura(MySpells.Higanbana.Name, true, 4500) &&
+            ((int)ActionResourceManager.Samurai.Sen == 1 ||
+            (int)ActionResourceManager.Samurai.Sen == 2 ||
+            (int)ActionResourceManager.Samurai.Sen == 4) &&
+            !Core.Player.HasAura(MySpells.Kaiten.Name))
             {
                 return await MySpells.Higanbana.Cast();
             }
@@ -171,7 +194,11 @@ namespace UltimaCR.Rotations
         private async Task<bool> TenkaGoken()
         {
             if (ActionManager.CanCast(MySpells.TenkaGoken.Name,Core.Player.CurrentTarget) &&
-            Helpers.EnemiesNearTarget(8) > 3)
+            Helpers.EnemiesNearTarget(8) > 3 &&
+            ((int)ActionResourceManager.Samurai.Sen == 3 ||
+            (int)ActionResourceManager.Samurai.Sen == 6 ||
+            (int)ActionResourceManager.Samurai.Sen == 5) &&
+            !Core.Player.HasAura(MySpells.Kaiten.Name))
             {
                     return await MySpells.TenkaGoken.Cast();
             }
@@ -180,11 +207,92 @@ namespace UltimaCR.Rotations
 
         private async Task<bool> MidareSetsugekka()
         {
-            if (ActionManager.CanCast(MySpells.MidareSetsugekka.Name,Core.Player.CurrentTarget))
+            if (Core.Player.HasAura(MySpells.Kaiten.Name) ||
+            (!ActionManager.CanCast(MySpells.Kaiten.Name,Core.Player) &&
+            ActionManager.CanCast(MySpells.MidareSetsugekka.Name,Core.Player.CurrentTarget)))
             {
                 return await MySpells.MidareSetsugekka.Cast();
             }
             return false;    
+        }
+
+        private async Task<bool> Kaiten()
+        {
+            if (ActionManager.CanCast(MySpells.MidareSetsugekka.Name,Core.Player.CurrentTarget))
+            {
+                return await MySpells.Kaiten.Cast();
+            }
+            return false;    
+        }
+
+        private async Task<bool> Goad()
+        {
+            if (PartyManager.IsInParty)
+            {
+                var target = Helpers.GoadManager.FirstOrDefault();
+
+                if (target != null)
+                {
+                    return await MySpells.CrossClass.Goad.Cast(target);
+                }
+            }
+            return false;
+        }
+
+        private async Task<bool> Bloodbath()
+        {
+            if (Core.Player.InCombat &&
+            Core.Player.CurrentHealthPercent <= 75)
+            {
+                return await MySpells.CrossClass.Bloodbath.Cast();
+            }
+            return false;
+        }
+
+        private async Task<bool> Invigorate()
+        {
+            if (Core.Player.CurrentTP <= 440)
+            {
+                return await MySpells.CrossClass.Invigorate.Cast();
+            }
+            return false;
+        }
+
+        private async Task<bool> SecondWind()
+        {
+            if (Core.Player.CurrentHealthPercent <= 40)
+            {
+                return await MySpells.CrossClass.SecondWind.Cast();
+            }
+            return false;
+        }
+
+        private async Task<bool> MercifulEyes()
+        {
+            if (Core.Player.CurrentHealthPercent <= 80)
+            {
+                return await MySpells.MercifulEyes.Cast();
+            }
+            return false;
+        }
+
+        private async Task<bool> ThirdEye()
+        {
+            if (Core.Player.CurrentHealthPercent <= 80)
+            {
+                return await MySpells.ThirdEye.Cast();
+            }
+            return false;
+        }
+
+        private async Task<bool> Shinten()
+        {
+            if (ActionResourceManager.Samurai.Kenki >= 45 &&
+            ActionManager.LastSpell.Name != MySpells.Shinten.Name)
+            {
+                return await MySpells.Shinten.Cast();
+            }
+            return false;
         }
 
         #endregion
