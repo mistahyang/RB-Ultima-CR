@@ -769,7 +769,8 @@ namespace UltimaCR.Rotations
         private async Task<bool> Geirskogul()
         {
                 if (ActionManager.CanCast(MySpells.Geirskogul.Name,Core.Player.CurrentTarget) &&
-                    !Core.Player.HasAura(MySpells.LifeSurge.Name,true))
+                    !Core.Player.HasAura(MySpells.LifeSurge.Name,true) &&
+                    ActionResourceManager.Dragoon.DragonGaze != 3)
                 {
                     return await MySpells.Geirskogul.Cast();
 		        }

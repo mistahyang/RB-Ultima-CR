@@ -38,7 +38,18 @@ namespace UltimaCR.Rotations
                 if (/*(int)ActionResourceManager.Samurai.Sen != 2 || 
                 (int)ActionResourceManager.Samurai.Sen != 3 || 
                 (int)ActionResourceManager.Samurai.Sen != 6 &&*/
+                ActionManager.HasSpell(MySpells.Yukikaze.Name) &&
                 !Core.Player.HasAura(MySpells.Jinpu.Name, true, 17000) &&
+                !Core.Player.HasAura(MySpells.Kaiten.Name))
+                {
+                    return await MySpells.Jinpu.Cast();
+                }
+
+                if (/*(int)ActionResourceManager.Samurai.Sen != 2 || 
+                (int)ActionResourceManager.Samurai.Sen != 3 || 
+                (int)ActionResourceManager.Samurai.Sen != 6 &&*/
+                !ActionManager.HasSpell(MySpells.Yukikaze.Name) &&
+                !Core.Player.HasAura(MySpells.Jinpu.Name, true, 21000) &&
                 !Core.Player.HasAura(MySpells.Kaiten.Name))
                 {
                     return await MySpells.Jinpu.Cast();
@@ -54,11 +65,23 @@ namespace UltimaCR.Rotations
                 if (/*(int)ActionResourceManager.Samurai.Sen != 4 || 
                 (int)ActionResourceManager.Samurai.Sen != 5 || 
                 (int)ActionResourceManager.Samurai.Sen != 6 &&*/
+                ActionManager.HasSpell(MySpells.Yukikaze.Name) &&
                 !Core.Player.HasAura(MySpells.Shifu.Name, true, 17000) &&
                 !Core.Player.HasAura(MySpells.Kaiten.Name))
                 {
                     return await MySpells.Shifu.Cast();
                 }
+
+                if (/*(int)ActionResourceManager.Samurai.Sen != 4 || 
+                (int)ActionResourceManager.Samurai.Sen != 5 || 
+                (int)ActionResourceManager.Samurai.Sen != 6 &&*/
+                !ActionManager.HasSpell(MySpells.Yukikaze.Name) &&
+                !Core.Player.HasAura(MySpells.Shifu.Name, true, 21000) &&
+                !Core.Player.HasAura(MySpells.Kaiten.Name))
+                {
+                    return await MySpells.Shifu.Cast();
+                }
+
             }
             return false;
         }
@@ -100,8 +123,6 @@ namespace UltimaCR.Rotations
         private async Task<bool> Fuga()
         {
             if (Helpers.EnemiesNearTarget(8) > 4 && 
-            Core.Player.HasAura(MySpells.Shifu.Name, true, 4500) &&
-            Core.Player.HasAura(MySpells.Jinpu.Name, true, 4500) &&
             !Core.Player.HasAura(MySpells.Kaiten.Name))
             {
                 return await MySpells.Fuga.Cast();
@@ -142,8 +163,8 @@ namespace UltimaCR.Rotations
 
         private async Task<bool> Oka()
         {
-            if (ActionManager.LastSpell.Name == MySpells.Fuga.Name && Helpers.EnemiesNearTarget(8) > 4
-            && (int)ActionResourceManager.Samurai.Sen == 2 &&
+            if (ActionManager.LastSpell.Name == MySpells.Fuga.Name && 
+            (int)ActionResourceManager.Samurai.Sen == 2 &&
             !Core.Player.HasAura(MySpells.Kaiten.Name))
             {
                     return await MySpells.Oka.Cast();
