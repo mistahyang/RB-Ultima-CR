@@ -174,7 +174,7 @@ namespace UltimaCR.Spells.Main
                                Level = 35,
                                GCDType = GCDType.On,
                                SpellType = SpellType.Damage,
-                               CastType = CastType.Target
+                               CastType = CastType.Self
                            });
             }
         }
@@ -192,7 +192,7 @@ namespace UltimaCR.Spells.Main
                                Level = 45,
                                GCDType = GCDType.On,
                                SpellType = SpellType.Damage,
-                               CastType = CastType.Target
+                               CastType = CastType.Self
                            });
             }
         }
@@ -246,7 +246,7 @@ namespace UltimaCR.Spells.Main
                                Level = 1,
                                GCDType = GCDType.On,
                                SpellType = SpellType.Damage,
-                               CastType = CastType.Target
+                               CastType = CastType.Self
                            });
             }
         }

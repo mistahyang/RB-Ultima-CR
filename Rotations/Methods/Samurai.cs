@@ -122,7 +122,7 @@ namespace UltimaCR.Rotations
 
         private async Task<bool> Fuga()
         {
-            if (Helpers.EnemiesNearTarget(8) > 4 && 
+            if (Helpers.EnemiesNearTarget(8) > 3 && 
             !Core.Player.HasAura(MySpells.Kaiten.Name))
             {
                 return await MySpells.Fuga.Cast();
@@ -132,8 +132,10 @@ namespace UltimaCR.Rotations
 
         private async Task<bool> Mangetsu()
         {
-            if (ActionManager.LastSpell.Name == MySpells.Fuga.Name && 
-            Helpers.EnemiesNearTarget(8) > 4 &&
+            if (ActionManager.LastSpell.Name == MySpells.Fuga.Name &&
+            ((int)ActionResourceManager.Samurai.Sen != 2 &&
+            (int)ActionResourceManager.Samurai.Sen != 3 &&
+            (int)ActionResourceManager.Samurai.Sen != 6) &&
             !Core.Player.HasAura(MySpells.Kaiten.Name))
             {
                     return await MySpells.Mangetsu.Cast();
@@ -164,7 +166,9 @@ namespace UltimaCR.Rotations
         private async Task<bool> Oka()
         {
             if (ActionManager.LastSpell.Name == MySpells.Fuga.Name && 
-            (int)ActionResourceManager.Samurai.Sen == 2 &&
+            ((int)ActionResourceManager.Samurai.Sen != 4 &&
+            (int)ActionResourceManager.Samurai.Sen != 5 &&
+            (int)ActionResourceManager.Samurai.Sen != 6) &&
             !Core.Player.HasAura(MySpells.Kaiten.Name))
             {
                     return await MySpells.Oka.Cast();

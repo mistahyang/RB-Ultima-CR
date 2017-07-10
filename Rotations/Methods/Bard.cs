@@ -26,7 +26,8 @@ namespace UltimaCR.Rotations
         {
             //if (!ActionManager.CanCast(MySpells.EmpyrealArrow.Name, Core.Player.CurrentTarget))
                 //{
-                    return await MySpells.HeavyShot.Cast();
+
+                return await MySpells.HeavyShot.Cast(); 
                 //}
             //return false;
         }

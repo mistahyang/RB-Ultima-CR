@@ -8,7 +8,6 @@ namespace UltimaCR.Rotations
         {
             if (Ultima.UltSettings.SmartTarget)
             {
-                if (await Tomahawk()) return true;
                 if (await Berserk()) return true;
             	if (await Infuriate()) return true;  
                 if (await InnerBeast()) return true;
@@ -27,7 +26,6 @@ namespace UltimaCR.Rotations
             }
             if (Ultima.UltSettings.SingleTarget)
             {
-                if (await Tomahawk()) return true;
                 if (await Berserk()) return true;
                 if (await InnerRelease()) return true;
             	if (await Infuriate()) return true;  

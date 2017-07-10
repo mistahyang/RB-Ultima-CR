@@ -231,7 +231,9 @@ namespace UltimaCR.Rotations
 
         private async Task<bool> Vengeance()
         {
-	    	if (Core.Player.CurrentHealthPercent <= 50 && !Core.Player.HasAura(MySpells.CrossClass.Rampart.Name,true))
+	    	if (Core.Player.CurrentHealthPercent <= 50 && 
+            !Core.Player.HasAura(MySpells.CrossClass.Rampart.Name,true) &&
+            ActionManager.LastSpell.Name != MySpells.CrossClass.Rampart.Name)
 	    	{
 				return await MySpells.Vengeance.Cast(); 
 	    	}
@@ -240,7 +242,9 @@ namespace UltimaCR.Rotations
 
 		private async Task<bool> Rampart()
         {
-	    	if (Core.Player.CurrentHealthPercent <= 50 && !Core.Player.HasAura(MySpells.Vengeance.Name,true))
+	    	if (Core.Player.CurrentHealthPercent <= 50 && 
+            !Core.Player.HasAura(MySpells.Vengeance.Name,true) &&
+            ActionManager.LastSpell.Name != MySpells.Vengeance.Name)
 	    	{
 				return await MySpells.CrossClass.Rampart.Cast(); 
 	    	}
