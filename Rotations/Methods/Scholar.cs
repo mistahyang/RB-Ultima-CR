@@ -407,7 +407,7 @@ namespace UltimaCR.Rotations
 
         private async Task<bool> Esuna()
         {
-            if (Ultima.LastSpell.Name != MySpells.Esuna.Name)
+            if (Ultima.LastSpell.Name != MySpells.CrossClass.Esuna.Name)
 			{
 		        if (PartyManager.IsInParty)
                 {
@@ -417,14 +417,14 @@ namespace UltimaCR.Rotations
 			
 			        if (target != null)
                     {
-				        return await MySpells.Esuna.Cast(target);
+				        return await MySpells.CrossClass.Esuna.Cast(target);
 			        }
                 }
                 else
                 {
                     if (Core.Player.HasDebuff)
                     {
-                        return await MySpells.Esuna.Cast();
+                        return await MySpells.CrossClass.Esuna.Cast();
                     }
 
                 }

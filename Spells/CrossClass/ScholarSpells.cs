@@ -179,6 +179,23 @@ namespace UltimaCR.Spells.CrossClass
                                });
                 }
             }
+            private Spell _esuna;
+            public Spell Esuna
+            {
+                get {
+                    return _esuna ??
+                           (_esuna =
+                               new Spell
+                               {
+                                   Name = "Esuna",
+                                   ID = 7568,
+                                   Level = 24,
+                                   GCDType = GCDType.On,
+                                   SpellType = SpellType.Buff,
+                                   CastType = CastType.Target
+                               });
+                }
+            }
             #endregion
         }
     }
