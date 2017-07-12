@@ -250,8 +250,8 @@ namespace UltimaCR.Rotations
         private async Task<bool> Kaiten()
         {
             if (ActionManager.CanCast(MySpells.MidareSetsugekka.Name,Core.Player.CurrentTarget) &&
-            !ActionManager.CanCast(MySpells.Hagakure.Name,Core.Player) ||
-            ActionManager.LastSpell.Name != MySpells.Hagakure.Name)
+            (!ActionManager.CanCast(MySpells.Hagakure.Name,Core.Player) ||
+            ActionManager.LastSpell.Name != MySpells.Hagakure.Name))
             {
                 return await MySpells.Kaiten.Cast();
             }
@@ -331,10 +331,20 @@ namespace UltimaCR.Rotations
         {
             if (ActionResourceManager.Samurai.Kenki >= 45 &&
             ActionManager.LastSpell.Name != MySpells.Shinten.Name &&
-            !ActionManager.CanCast(MySpells.Guren.Name, Core.Player.CurrentTarget))
+            !ActionManager.CanCast(MySpells.Guren.Name, Core.Player.CurrentTarget) &&
+            Ultima.UltSettings.SingleTarget)
             {
                 return await MySpells.Shinten.Cast();
             }
+            else
+            {
+                if(ActionResourceManager.Samurai.Kenki >= 45 &&
+                ActionManager.LastSpell.Name != MySpells.Shinten.Name)
+                {
+                    return await MySpells.Shinten.Cast();
+                }
+            }
+
             return false;
         }
 

@@ -11,6 +11,7 @@ namespace UltimaCR.Rotations
                 /*if (await Jump()) return true;
                 if (await LifeSurge()) return true;*/
                 if (await Shinten()) return true;
+                if (await Hagakure()) return true;
                 if (await Ageha()) return true;
                 if (await TenkaGoken()) return true;
                 if (await Oka()) return true;
