@@ -24,12 +24,11 @@ namespace UltimaCR.Rotations
 
         private async Task<bool> HeavyShot()
         {
-            //if (!ActionManager.CanCast(MySpells.EmpyrealArrow.Name, Core.Player.CurrentTarget))
-                //{
-
-                return await MySpells.HeavyShot.Cast(); 
-                //}
-            //return false;
+            if (!ActionManager.CanCast(MySpells.EmpyrealArrow.Name, Core.Player.CurrentTarget))
+            {
+                return await MySpells.HeavyShot.Cast();
+            }
+            return false;
         }
 
         private async Task<bool> PitchPerfect()
@@ -138,7 +137,9 @@ namespace UltimaCR.Rotations
                         return await MySpells.RefulgentArrow.Cast();
                     }
                 }
-                else
+                
+                if (!ActionManager.HasSpell(MySpells.RefulgentArrow.Name) &&
+                !ActionManager.CanCast(MySpells.EmpyrealArrow.Name, Core.Player.CurrentTarget))
                 {
                     return await MySpells.StraightShot.Cast();
                 }
@@ -511,17 +512,7 @@ namespace UltimaCR.Rotations
         private async Task<bool> EmpyrealArrow()
         {
             if (Core.Player.HasAura(MySpells.StraightShot.Name, true, 3250) &&
-            !ActionManager.CanCast(MySpells.RefulgentArrow.Name, Core.Player.CurrentTarget) &&
-            Ultima.LastSpell.Name != MySpells.RagingStrikes.Name &&
-		    Ultima.LastSpell.Name != MySpells.Sidewinder.Name &&
-		    Ultima.LastSpell.Name != MySpells.RainOfDeath.Name &&
-		    Ultima.LastSpell.Name != MySpells.Bloodletter.Name &&
-		    Ultima.LastSpell.Name != MySpells.WanderersMinuet.Name &&
-		    Ultima.LastSpell.Name != MySpells.ArmysPaeon.Name &&
-            Ultima.LastSpell.Name != MySpells.MagesBallad.Name &&
-            Ultima.LastSpell.Name != MySpells.NaturesMinne.Name &&
-            Ultima.LastSpell.Name != MySpells.BattleVoice.Name &&
-            Ultima.LastSpell.Name != MySpells.EmpyrealArrow.Name)
+            !ActionManager.CanCast(MySpells.RefulgentArrow.Name, Core.Player.CurrentTarget))
             {
                 return await MySpells.EmpyrealArrow.Cast();
             }

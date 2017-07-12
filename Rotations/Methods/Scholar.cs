@@ -22,14 +22,7 @@ namespace UltimaCR.Rotations
 
         private async Task<bool> Ruin()
         {
-            if (!ActionManager.HasSpell(MySpells.Broil.Name) ||
-
-		!ActionManager.HasSpell(MySpells.Broil.Name) &&
-		Ultima.LastSpell.Name == MySpells.ShadowFlare.Name &&
-		!Core.Player.HasAura(190) ||
-
-		ActionManager.HasSpell(MySpells.Broil.Name) &&
-		Core.Player.CurrentManaPercent < 50)
+            if (!ActionManager.HasSpell(MySpells.Broil.Name))
             {
                 return await MySpells.Ruin.Cast();
             }
@@ -38,31 +31,30 @@ namespace UltimaCR.Rotations
 
         private async Task<bool> Bio()
         {
-            if (!Core.Player.CurrentTarget.HasAura(MySpells.Bio.Name, true, 4000))
+            if (!ActionManager.HasSpell(MySpells.BioII.Name))
             {
-                return await MySpells.Bio.Cast();
+                if (!Core.Player.CurrentTarget.HasAura(MySpells.Bio.Name, true, 4000))
+                {
+                    return await MySpells.Bio.Cast();
+                }
+
+                /*if (ActionManager.CanCast(MySpells.Bane.Name, Core.Player.CurrentTarget) &&
+                    Core.Player.CurrentTarget.HasAura(MySpells.Miasma.Name, true, 20000) &&
+                    !Core.Player.CurrentTarget.HasAura(MySpells.Bio.Name,true, 20000) &&
+                    Helpers.EnemiesNearTarget(8) >= 2 &&
+                    ActionResourceManager.Arcanist.Aetherflow > 0)
+                {   
+                    return await MySpells.Bio.Cast();
+                }*/
             }
             return false;
         }
 
-	private async Task<bool> Summon()
+	    private async Task<bool> Summon()
         {
-            if (Core.Player.Pet == null &&
-                Ultima.UltSettings.ScholarSummonPet &&
-		Ultima.UltSettings.ScholarEos ||
-		Core.Player.Pet == null &&
-                Ultima.UltSettings.ScholarSummonPet &&
-                !ActionManager.HasSpell(MySpells.SummonII.Name))
-		
-            {
-                if (Ultima.UltSettings.SummonerSwiftcast &&
-		    ActionManager.CanCast(MySpells.CrossClass.Swiftcast.Name, Core.Player))
-                {
-                    if (await MySpells.CrossClass.Swiftcast.Cast())
-                    {
-                        await Coroutine.Wait(3000, () => Core.Player.HasAura(167));
-                    }
-                }
+            if (Core.Player.Pet == null && 
+                Ultima.LastSpell.Name != MySpells.Summon.Name)
+		    {
                 return await MySpells.Summon.Cast();
             }
             return false;
@@ -73,7 +65,7 @@ namespace UltimaCR.Rotations
             if (PartyManager.IsInParty)
             {
                 var target = Helpers.HealManager.FirstOrDefault(hm =>
-                    hm.CurrentHealthPercent <= 80);
+                    hm.CurrentHealthPercent <= 50);
 
                 if (target != null)
                 {
@@ -83,7 +75,7 @@ namespace UltimaCR.Rotations
             else
             {
 
-                if (Core.Player.CurrentHealthPercent < 80)
+                if (Core.Player.CurrentHealthPercent < 50)
                 {
                     return await MySpells.Physick.Cast();
                 }
@@ -95,10 +87,7 @@ namespace UltimaCR.Rotations
 
         private async Task<bool> Aetherflow()
         {
-            if (!Core.Player.HasAura(MySpells.Aetherflow.Name) ||
-		!Core.Player.HasAura(MySpells.Aetherflow.Name) &&
-		!Core.Player.HasTarget &&
-		Core.Player.InCombat)
+            if (ActionResourceManager.Arcanist.Aetherflow == 0)
             {
                 return await MySpells.Aetherflow.Cast();
             }
@@ -107,33 +96,39 @@ namespace UltimaCR.Rotations
 
         private async Task<bool> EnergyDrain()
         {
-            if (Core.Player.HasAura(MySpells.Aetherflow.Name))
+            if (Core.Player.CurrentManaPercent < 80 &&
+            ActionManager.CanCast(MySpells.EnergyDrain.Name, Core.Player.CurrentTarget))
             {
-                if (Core.Player.CurrentManaPercent <= 80 ||
-		
-		    Ultima.LastSpell.Name == MySpells.Bio.Name &&
-		    ActionManager.CanCast(MySpells.Aetherflow.Name, Core.Player) ||
+                return await MySpells.EnergyDrain.Cast();
+            }
+            return false;
+        }
 
-		    Ultima.LastSpell.Name == MySpells.CrossClass.Aero.Name &&
-		    ActionManager.CanCast(MySpells.Aetherflow.Name, Core.Player) ||
-
-		    Ultima.LastSpell.Name == MySpells.Broil.Name &&
-		    ActionManager.CanCast(MySpells.Aetherflow.Name, Core.Player) ||
-
-		    MovementManager.IsMoving &&
-		    ActionManager.CanCast(MySpells.Aetherflow.Name, Core.Player))
-                {
-                    return await MySpells.EnergyDrain.Cast();
-                }
+        private async Task<bool> LucidDreaming()
+        {
+            if (Core.Player.CurrentManaPercent < 50)
+            {
+                return await MySpells.CrossClass.LucidDreaming.Cast();
             }
             return false;
         }
 
         private async Task<bool> Miasma()
         {
-            if (!Core.Player.CurrentTarget.HasAura(MySpells.Miasma.Name, true, 5000))
+            if (Ultima.LastSpell.Name != MySpells.Miasma.Name)
             {
-                return await MySpells.Miasma.Cast();
+                if (!Core.Player.CurrentTarget.HasAura(MySpells.Miasma.Name, true, 5000))
+                {
+                    return await MySpells.Miasma.Cast();
+                }
+
+                /*if (ActionManager.CanCast(MySpells.Bane.Name, Core.Player.CurrentTarget) &&
+                    !Core.Player.CurrentTarget.HasAura(MySpells.Miasma.Name, true, 20000) &&
+                    Helpers.EnemiesNearTarget(8) >= 2 &&
+                    ActionResourceManager.Arcanist.Aetherflow > 0)
+                {
+                    return await MySpells.Miasma.Cast();
+                }*/
             }
             return false;
         }
@@ -163,6 +158,26 @@ namespace UltimaCR.Rotations
             }
             return false;
         }
+
+        private async Task<bool> SummonChocobo()
+		{
+			if (!ChocoboManager.Summoned)
+            {
+                ChocoboManager.ForceSummon();
+				return true;
+            }
+
+            if (ChocoboManager.Summoned)
+            {
+				if (ChocoboManager.Stance != CompanionStance.Attacker)
+                {
+                    ChocoboManager.AttackerStance();
+                    return true;
+                }
+			}
+
+			return false;
+		}
 
         private async Task<bool> Sustain()
         {
@@ -207,19 +222,30 @@ namespace UltimaCR.Rotations
             {
                 return await MySpells.BioII.Cast();
             }
+
+            if (ActionManager.CanCast(MySpells.Bane.Name, Core.Player.CurrentTarget) &&
+            Core.Player.CurrentTarget.HasAura(MySpells.Miasma.Name, true, 20000) &&
+            !Core.Player.CurrentTarget.HasAura(MySpells.BioII.Name,true, 20000) && 
+            Helpers.EnemiesNearTarget(8) >= 2 &&
+            ActionResourceManager.Arcanist.Aetherflow > 0)
+            {
+                return await MySpells.BioII.Cast();
+            }
+
             return false;
         }
 
         private async Task<bool> Bane()
         {
-            if (Core.Player.HasAura(MySpells.Aetherflow.Name) &&
-                Core.Player.CurrentManaPercent > 40 &&
-                Helpers.EnemiesNearTarget(8) > 1 &&
-                Core.Player.CurrentTarget.HasAura(MySpells.BioII.Name, true, 8000) &&
-                Core.Player.CurrentTarget.HasAura(MySpells.Miasma.Name, true, 8000) &&
-                Core.Player.CurrentTarget.HasAura(MySpells.Bio.Name, true, 5000))
+            if (ActionResourceManager.Arcanist.Aetherflow > 0)
             {
-                return await MySpells.Bane.Cast();
+                if (Helpers.EnemiesNearTarget(8) >= 2 &&
+                (Core.Player.CurrentTarget.HasAura(MySpells.BioII.Name,true,20000) ||
+                Core.Player.CurrentTarget.HasAura(MySpells.Bio.Name,true,20000)) &&
+                Core.Player.CurrentTarget.HasAura(MySpells.Miasma.Name,true,20000))
+                {
+                        return await MySpells.Bane.Cast();
+                }
             }
             return false;
         }
@@ -337,6 +363,7 @@ namespace UltimaCR.Rotations
             {
                 var target = Helpers.PartyMembers.FirstOrDefault(pm =>
                 pm.Type == GameObjectType.Pc &&
+                !pm.IsDead &&
                 !pm.HasAura("Protect"));
 
                 if (target != null)
@@ -351,8 +378,6 @@ namespace UltimaCR.Rotations
                     return await MySpells.CrossClass.Protect.Cast();
                 }
             }
-            
-
             return false;
         }
 
@@ -436,12 +461,17 @@ namespace UltimaCR.Rotations
 
         private async Task<bool> Succor()
         {
-            if (
-		        !Core.Player.HasAura(297) &&
-		        !Core.Player.HasAura(837))
-                {
-                    return await MySpells.Succor.Cast();
-                }
+            if (PartyManager.IsInParty)
+            {
+                if(Helpers.HealManager.Count(hm =>
+                    hm.Distance2D(Core.Player) - hm.CombatReach - Core.Player.CombatReach <= 20 &&
+                    (hm.IsHealer() && hm.CurrentHealthPercent <= 70 ||
+                    hm.IsDPS() && hm.CurrentHealthPercent <= 70 ||
+                    hm.IsTank() && hm.CurrentHealthPercent <= 80)) > 2)
+                    {
+                        return await MySpells.Succor.Cast();
+                    }
+            }
             return false;
         }
 
@@ -473,89 +503,55 @@ namespace UltimaCR.Rotations
 
         private async Task<bool> Lustrate()
         {
-            if (ActionManager.CanCast(MySpells.CrossClass.ClericStance.Name, Core.Player) &&
-		Ultima.LastSpell.Name != MySpells.CrossClass.ClericStance.Name)
+            if (ActionResourceManager.Arcanist.Aetherflow > 0)
             {
-                var target = Helpers.HealManager.FirstOrDefault(hm =>
-		    !hm.HasAura(297) &&
-                    hm.IsHealer() && hm.CurrentHealthPercent <= 40 ||
-                    hm.IsDPS() && hm.CurrentHealthPercent <= 40 ||
-                    hm.IsTank() && hm.CurrentHealthPercent <= 35);
-
-                if (target != null)
+                if (PartyManager.IsInParty)
                 {
-                    return await MySpells.Lustrate.Cast(target);
+                    var target = Helpers.HealManager.FirstOrDefault(hm =>
+                        hm.IsHealer() && hm.CurrentHealthPercent <= 25 ||
+                        hm.IsDPS() && hm.CurrentHealthPercent <= 25 ||
+                        hm.IsTank() && hm.CurrentHealthPercent <= 20);
+
+                    if (target != null)
+                    {
+                        return await MySpells.Lustrate.Cast(target);
+                    }
+
                 }
+                
+                if (Core.Player.CurrentHealthPercent <= 25)
+                {
+                    return await MySpells.Lustrate.Cast();
+                }
+                
             }
             return false;
         }
 
         private async Task<bool> Indomitability()
         {
-            if (ActionManager.CanCast(MySpells.CrossClass.ClericStance.Name, Core.Player) &&
-		Ultima.LastSpell.Name != MySpells.CrossClass.ClericStance.Name &&
-		Core.Player.HasTarget &&
-		Core.Player.InCombat &&
-		Core.Player.CurrentTarget.MaxHealth > Core.Player.MaxHealth * 10 &&
-		Core.Player.HasAura(MySpells.Aetherflow.Name) &&
-		Core.Player.HasAura(297, true) &&
-		Helpers.HealManager.Count(hm =>
-                hm.Distance2D(Core.Player) - hm.CombatReach - Core.Player.CombatReach <= 20 &&
-                (hm.IsHealer() && hm.CurrentHealthPercent <= 70 ||
-                hm.IsDPS() && hm.CurrentHealthPercent <= 70 ||
-                hm.IsTank() && hm.CurrentHealthPercent <= 80)) > 2)
+            if (ActionResourceManager.Arcanist.Aetherflow > 0)
             {
-                return await MySpells.Indomitability.Cast();
+                if (PartyManager.IsInParty)
+                {
+                if(Helpers.HealManager.Count(hm =>
+                    hm.Distance2D(Core.Player) - hm.CombatReach - Core.Player.CombatReach <= 20 &&
+                    (hm.IsHealer() && hm.CurrentHealthPercent <= 70 ||
+                    hm.IsDPS() && hm.CurrentHealthPercent <= 70 ||
+                    hm.IsTank() && hm.CurrentHealthPercent <= 80)) > 2)
+                    {
+                        return await MySpells.Indomitability.Cast();
+                    }
+                }
             }
-            return false;
+		    return false;
         }
 
         private async Task<bool> Broil()
         {
-            if (Ultima.UltSettings.SingleTarget &&
-		Core.Player.CurrentTarget.CurrentHealthPercent > 14 &&
-		Core.Player.CurrentTarget.MaxHealth <= Core.Player.CurrentHealth * 10 &&
-		Core.Player.CurrentManaPercent >= 50 &&
-		Core.Player.HasAura(190, false) &&
-		Core.Player.CurrentTarget.HasAura(MySpells.BioII.Name, true) &&
-                Core.Player.CurrentTarget.HasAura(MySpells.Miasma.Name, true) &&
-                Core.Player.CurrentTarget.HasAura(MySpells.Bio.Name, true) ||
-
-		Ultima.UltSettings.SingleTarget &&
-		Core.Player.CurrentTarget.CurrentHealthPercent > 7 &&
-		Core.Player.CurrentTarget.MaxHealth > Core.Player.CurrentHealth * 10 &&
-		Core.Player.CurrentManaPercent >= 50 &&
-		Core.Player.HasAura(190, false) &&
-		Core.Player.CurrentTarget.HasAura(MySpells.BioII.Name, true) &&
-                Core.Player.CurrentTarget.HasAura(MySpells.Miasma.Name, true) &&
-                Core.Player.CurrentTarget.HasAura(MySpells.Bio.Name, true) ||
-
-		Ultima.UltSettings.SingleTarget &&
-		Core.Player.CurrentTarget.CurrentHealthPercent <= 14 &&
-		Core.Player.CurrentTarget.MaxHealth <= Core.Player.CurrentHealth * 10 &&
-		Core.Player.CurrentManaPercent >= 50 ||
-
-		Ultima.UltSettings.SingleTarget &&
-		Core.Player.CurrentTarget.CurrentHealthPercent <= 7 &&
-		Core.Player.CurrentTarget.MaxHealth > Core.Player.CurrentHealth * 10 &&
-		Core.Player.CurrentManaPercent >= 50 ||
-
-		Ultima.UltSettings.SingleTarget &&
-		Core.Player.CurrentTarget.MaxHealth < Core.Player.CurrentHealth * 2 ||
-
-		Ultima.UltSettings.SmartTarget &&
-		Core.Player.CurrentManaPercent >= 50 &&
-		Core.Player.HasAura(190, false) ||
-
-		Ultima.UltSettings.MultiTarget &&
-		Core.Player.CurrentManaPercent >= 50 ||
-
-		Ultima.LastSpell.Name == MySpells.ShadowFlare.Name &&
-		!Core.Player.HasAura(190))
-            {
-                return await MySpells.Broil.Cast();
-            }
-            return false;
+            
+            return await MySpells.Broil.Cast();
+            
         }
 
         private async Task<bool> DeploymentTactics()

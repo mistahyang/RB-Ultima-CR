@@ -6,11 +6,9 @@ namespace UltimaCR.Rotations
     {
         public override async Task<bool> CombatBuff()
         {
-            if (await Ultima.SummonChocobo()) return true;
             if (await Protect()) return true;
-            if (await SummonII()) return true;
-	        if (await Aetherflow()) return true;
-            if (await Sustain()) return true;
+            if (await Aetherflow()) return true;
+            if (await LucidDreaming()) return true;
             return await Summon();
         }
     }

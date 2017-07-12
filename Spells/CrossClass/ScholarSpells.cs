@@ -66,7 +66,7 @@ namespace UltimaCR.Spells.CrossClass
                                new Spell
                                {
                                    Name = "Protect",
-                                   ID = 123,
+                                   ID = 7572,
                                    Level = 8,
                                    GCDType = GCDType.On,
                                    SpellType = SpellType.Defensive,
@@ -155,6 +155,24 @@ namespace UltimaCR.Spells.CrossClass
                                    Name = "Swiftcast",
                                    ID = 150,
                                    Level = 26,
+                                   GCDType = GCDType.On,
+                                   SpellType = SpellType.Buff,
+                                   CastType = CastType.Self
+                               });
+                }
+            }
+            //Lucid Dreaming Action Id:7562
+            private Spell _luciddreaming;
+            public Spell LucidDreaming
+            {
+                get {
+                    return _luciddreaming ??
+                           (_luciddreaming =
+                               new Spell
+                               {
+                                   Name = "Lucid Dreaming",
+                                   ID = 7562,
+                                   Level = 24,
                                    GCDType = GCDType.On,
                                    SpellType = SpellType.Buff,
                                    CastType = CastType.Self
