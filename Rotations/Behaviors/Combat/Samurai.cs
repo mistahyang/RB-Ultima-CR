@@ -13,11 +13,11 @@ namespace UltimaCR.Rotations
                 if (await Shinten()) return true;
                 if (await Ageha()) return true;
                 if (await TenkaGoken()) return true;
-                if (await Kaiten()) return true;
-                if (await MidareSetsugekka()) return true;
                 if (await Oka()) return true;
                 if (await Mangetsu()) return true;
                 if (await Fuga()) return true;
+                if (await Kaiten()) return true;
+                if (await MidareSetsugekka()) return true;
                 if (await Higanbana()) return true;
                 if (await Kasha()) return true;
                 if (await Gekko()) return true;
@@ -29,13 +29,11 @@ namespace UltimaCR.Rotations
             if (Ultima.UltSettings.SingleTarget)
             {
                 if (await Shinten()) return true;
+                if (await Guren()) return true;
+                if (await Hagakure()) return true;
                 if (await Ageha()) return true;
-                if (await TenkaGoken()) return true;
                 if (await Kaiten()) return true;
                 if (await MidareSetsugekka()) return true;
-                if (await Oka()) return true;
-                if (await Mangetsu()) return true;
-                if (await Fuga()) return true;
                 if (await Higanbana()) return true;
                 if (await Kasha()) return true;
                 if (await Gekko()) return true;

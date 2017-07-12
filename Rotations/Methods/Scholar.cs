@@ -413,7 +413,7 @@ namespace UltimaCR.Rotations
                 {
                     var target = Helpers.PartyMembers.FirstOrDefault(pm =>
                         pm.Type == GameObjectType.Pc &&
-                        pm.HasDebuff);
+                        pm.HasDebuff());
 			
 			        if (target != null)
                     {
@@ -422,7 +422,7 @@ namespace UltimaCR.Rotations
                 }
                 else
                 {
-                    if (Core.Player.HasDebuff)
+                    if (Core.Player.HasDebuff())
                     {
                         return await MySpells.CrossClass.Esuna.Cast();
                     }

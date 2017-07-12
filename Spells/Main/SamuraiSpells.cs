@@ -242,11 +242,11 @@ namespace UltimaCR.Spells.Main
                            new Spell
                            {
                                Name = "Tenka Goken",
-                               ID = 7406,
+                               ID = 7488,
                                Level = 1,
                                GCDType = GCDType.On,
                                SpellType = SpellType.Damage,
-                               CastType = CastType.Self
+                               CastType = CastType.Target
                            });
             }
         }
@@ -375,6 +375,63 @@ namespace UltimaCR.Spells.Main
                                GCDType = GCDType.On,
                                SpellType = SpellType.Damage,
                                CastType = CastType.Target
+                           });
+            }
+        }
+        //Hissatsu: Guren Action Id:7496
+        private Spell _guren;
+        public Spell Guren
+        {
+            get
+            {
+                return _guren ??
+                       (_guren =
+                           new Spell
+                           {
+                               Name = "Hissatsu: Guren",
+                               ID = 7496,
+                               Level = 70,
+                               GCDType = GCDType.On,
+                               SpellType = SpellType.Damage,
+                               CastType = CastType.Target
+                           });
+            }
+        }
+        //Meditate Action Id:7497
+        private Spell _meditate;
+        public Spell Meditate
+        {
+            get
+            {
+                return _meditate ??
+                       (_meditate =
+                           new Spell
+                           {
+                               Name = "Meditate",
+                               ID = 7497,
+                               Level = 60,
+                               GCDType = GCDType.On,
+                               SpellType = SpellType.Buff,
+                               CastType = CastType.Self
+                           });
+            }
+        }
+        //7495
+        private Spell _hagakure;
+        public Spell Hagakure
+        {
+            get
+            {
+                return _hagakure ??
+                       (_hagakure =
+                           new Spell
+                           {
+                               Name = "Hagakure",
+                               ID = 7495,
+                               Level = 68,
+                               GCDType = GCDType.On,
+                               SpellType = SpellType.Buff,
+                               CastType = CastType.Self
                            });
             }
         }
