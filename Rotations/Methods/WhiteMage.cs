@@ -168,11 +168,7 @@ namespace UltimaCR.Rotations
 			    {
 		            var target = Helpers.PartyMembers.FirstOrDefault(pm =>
                         pm.Type == GameObjectType.Pc &&
-                        (pm.HasAura("Paralysis") ||
-			            pm.HasAura("Damage Down") ||
-			            pm.HasAura("Poison") ||
-                        pm.HasAura("Silence") ||
-                        pm.HasAura("Sleep")));
+                        pm.HasDebuff);
 			
 			        if (target != null)
                     {

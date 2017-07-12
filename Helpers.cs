@@ -247,6 +247,24 @@ namespace UltimaCR
             }
         }
 
+        public static bool HasDebuff(this Character c)
+        {
+            if(c.HasAura("Paralysis") ||
+			    c.HasAura("Damage Down") ||
+			    c.HasAura("Poison") ||
+                c.HasAura("Silence") ||
+                c.HasAura("Sleep") ||
+                c.HasAura("Blind"))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+
+        }
+
         public static bool IsHealer(this Character c)
         {
             switch (c.CurrentJob)

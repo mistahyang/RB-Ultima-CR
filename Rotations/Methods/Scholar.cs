@@ -405,6 +405,33 @@ namespace UltimaCR.Rotations
             return false;
         }
 
+        private async Task<bool> Esuna()
+        {
+            if (Ultima.LastSpell.Name != MySpells.Esuna.Name)
+			{
+		        if (PartyManager.IsInParty)
+                {
+                    var target = Helpers.PartyMembers.FirstOrDefault(pm =>
+                        pm.Type == GameObjectType.Pc &&
+                        pm.HasDebuff);
+			
+			        if (target != null)
+                    {
+				        return await MySpells.Esuna.Cast(target);
+			        }
+                }
+                else
+                {
+                    if (Core.Player.HasDebuff)
+                    {
+                        return await MySpells.Esuna.Cast();
+                    }
+
+                }
+			}
+			return false;
+        }
+
         #endregion
 
         #region Thaumaturge
