@@ -519,5 +519,23 @@ namespace UltimaCR.Spells.Main
                            });
             }
         }
+        private Spell _cooldown;
+        public Spell Cooldown
+        {
+            get
+            {
+                return _cooldown ??
+                       (_cooldown =
+                           new Spell
+                           {
+                               Name = "Cooldown",
+                               ID = 7410,
+                               Level = 62,
+                               GCDType = GCDType.On,
+                               SpellType = SpellType.Damage,
+                               CastType = CastType.Target
+                           });
+            }
+        }
     }
 }

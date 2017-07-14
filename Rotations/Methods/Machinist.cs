@@ -1,8 +1,13 @@
-﻿using ff14bot;
+﻿using System;
+using Buddy.Coroutines;
+using ff14bot;
+using ff14bot.Enums;
 using ff14bot.Managers;
 using System.Linq;
 using System.Threading.Tasks;
+using UltimaCR.Spells;
 using UltimaCR.Spells.Main;
+using ff14bot.Objects;
 
 namespace UltimaCR.Rotations
 {
@@ -19,18 +24,7 @@ namespace UltimaCR.Rotations
 
         private async Task<bool> SplitShot()
         {
-            if (!Core.Player.HasAura(851) &&
-		Ultima.LastSpell.Name != MySpells.Reassemble.Name)
-            {
-                if (!Core.Player.HasAura(856) &&
-		    !Core.Player.HasAura(857) ||
-
-		    !Core.Player.HasAura(856))
-                {
-                    return await MySpells.SplitShot.Cast();
-		}
-            }
-            return false;
+            return await MySpells.SplitShot.Cast();
         }
 
         private async Task<bool> SlugShot()
@@ -48,31 +42,9 @@ namespace UltimaCR.Rotations
         }
         private async Task<bool> Reload()
         {
-            if (!Core.Player.InCombat &&
-		!Core.Player.HasAura(862) ||
-
-		Core.Player.InCombat &&
-		!ActionManager.HasSpell(MySpells.HotShot.Name) &&
-		!Core.Player.HasAura(862) ||
-
-		Core.Player.InCombat &&
-		ActionManager.HasSpell(MySpells.HotShot.Name) &&
-		!ActionManager.HasSpell(MySpells.Wildfire.Name) &&
-		!Core.Player.HasAura(862) &&
-                Core.Player.HasAura(MySpells.HotShot.Name, true, 9000) ||
-
-		Core.Player.InCombat &&
-		Core.Player.CurrentTarget.CurrentHealth <= Core.Player.MaxHealth * 2 &&
-		ActionManager.HasSpell(MySpells.Wildfire.Name) &&
-		!Core.Player.HasAura(862) &&
-		Core.Player.HasAura(MySpells.HotShot.Name, true, 9000) ||
-
-		Core.Player.InCombat &&
-		Core.Player.CurrentTarget.CurrentHealth > Core.Player.MaxHealth * 2 &&
-		ActionManager.HasSpell(MySpells.Wildfire.Name) &&
-		!ActionManager.CanCast(MySpells.Wildfire.Name, Core.Player.CurrentTarget) &&
-		!Core.Player.HasAura(862) &&
-		Core.Player.HasAura(MySpells.HotShot.Name, true, 9000))
+            if ((!ActionManager.HasSpell(MySpells.HotShot.Name) ||
+                Core.Player.HasAura(MySpells.HotShot.Name, true, 9000)) &&
+				ActionResourceManager.Machinist.Ammo == 0)
             {
                 return await MySpells.Reload.Cast();
             }
@@ -81,29 +53,9 @@ namespace UltimaCR.Rotations
 
         private async Task<bool> QuickReload()
         {
-            if (!Core.Player.InCombat &&
-		Ultima.LastSpell.Name != MySpells.Reload.Name &&
-		!Core.Player.HasAura(862) ||
-
-		!Core.Player.InCombat &&
-		Ultima.LastSpell.Name == MySpells.QuickReload.Name &&
-		!ActionManager.CanCast(MySpells.Reload.Name, Core.Player) ||
-		
-		Core.Player.InCombat &&
-		ActionManager.HasSpell(MySpells.QuickReload.Name) &&
-		!ActionManager.CanCast(MySpells.Reload.Name, Core.Player) &&
-		Ultima.LastSpell.Name != MySpells.Reload.Name ||
-
-		Core.Player.InCombat &&
-		ActionManager.HasSpell(MySpells.QuickReload.Name) &&
-		!ActionManager.CanCast(MySpells.Reload.Name, Core.Player) &&
-		Ultima.LastSpell.Name != MySpells.Reload.Name &&
-		Core.Player.HasAura(MySpells.HotShot.Name, true, 5000) ||
-
-		Core.Player.InCombat &&
-		Ultima.LastSpell.Name != MySpells.Reload.Name &&
-		!Core.Player.HasTarget &&
-		!Core.Player.InCombat)
+            if (!ActionManager.CanCast(MySpells.Reload.Name, Core.Player) &&
+			ActionResourceManager.Machinist.Ammo < 3 &&
+			ActionResourceManager.Machinist.Heat >= 60)
             {
                 return await MySpells.QuickReload.Cast();
             }
@@ -186,35 +138,12 @@ namespace UltimaCR.Rotations
 
         private async Task<bool> Reassemble()
         {
-            if (!ActionManager.HasSpell(MySpells.CleanShot.Name) &&
-		Ultima.LastSpell.Name != MySpells.SlugShot.Name &&
-		Core.Player.CurrentTarget.CurrentHealth > Core.Player.MaxHealth / 2 &&
-		Core.Player.HasAura(856) ||
-
-		ActionManager.HasSpell(MySpells.CleanShot.Name) &&
-		Ultima.LastSpell.Name != MySpells.CleanShot.Name &&
-		Core.Player.CurrentTarget.CurrentHealth > Core.Player.MaxHealth / 2 &&
-		Core.Player.CurrentTarget.CurrentHealth <= Core.Player.MaxHealth * 4 &&
-		!Core.Player.HasAura(856) &&
-		Core.Player.HasAura(857) &&
-		Core.Player.HasAura(MySpells.HotShot.Name, true, 5000) ||
-
-		Core.Player.CurrentTarget.CurrentHealthPercent >= 80 &&
-		!ActionManager.CanCast(MySpells.Wildfire.Name, Core.Player) &&
-		ActionManager.HasSpell(MySpells.CleanShot.Name) &&
-		Ultima.LastSpell.Name != MySpells.CleanShot.Name &&
-		Core.Player.CurrentTarget.CurrentHealth > Core.Player.MaxHealth * 4 &&
-		!Core.Player.HasAura(856) &&
-		Core.Player.HasAura(857) &&
-		Core.Player.HasAura(MySpells.HotShot.Name, true, 5000) ||
-
-		Core.Player.CurrentTarget.CurrentHealthPercent < 80 &&
-		ActionManager.HasSpell(MySpells.CleanShot.Name) &&
-		Ultima.LastSpell.Name != MySpells.CleanShot.Name &&
-		Core.Player.CurrentTarget.CurrentHealth > Core.Player.MaxHealth * 4 &&
-		!Core.Player.HasAura(856) &&
-		Core.Player.HasAura(857) &&
-		Core.Player.HasAura(MySpells.HotShot.Name, true, 5000))
+            if ((!ActionManager.HasSpell(MySpells.CleanShot.Name) &&
+				Core.Player.HasAura("Enhanced Slug Shot"))  ||
+				(Core.Player.HasAura("Cleaner Shot") ||
+				ActionManager.CanCast(MySpells.Ricochet.Name,Core.Player.CurrentTarget)) &&
+				Core.Player.HasAura(MySpells.HotShot.Name, true, 5000) &&
+				Core.Player.CurrentTarget.HasAura(MySpells.Wildfire.Name,true))
             {
                 return await MySpells.Reassemble.Cast();
             }
@@ -307,46 +236,21 @@ namespace UltimaCR.Rotations
 
         private async Task<bool> RapidFire()
         {
-            if (Core.Player.HasTarget &&
-		Core.Player.InCombat &&
-		!ActionManager.CanCast(MySpells.Reload.Name, Core.Player) &&
-		Ultima.LastSpell.Name != MySpells.CrossClass.RagingStrikes.Name &&
-		Ultima.LastSpell.Name != MySpells.CrossClass.HawksEye.Name &&
-		Ultima.LastSpell.Name != MySpells.CrossClass.BloodForBlood.Name &&
-		Ultima.LastSpell.Name != MySpells.Reload.Name &&
-		Ultima.LastSpell.Name != MySpells.Heartbreak.Name &&
-		Ultima.LastSpell.Name != MySpells.LegGraze.Name &&
-		Ultima.LastSpell.Name != MySpells.Reassemble.Name &&
-		Ultima.LastSpell.Name != MySpells.Blank.Name &&
-		Ultima.LastSpell.Name != MySpells.FootGraze.Name &&
-		Ultima.LastSpell.Name != MySpells.QuickReload.Name &&
-		Ultima.LastSpell.Name != MySpells.HeadGraze.Name &&
-		Ultima.LastSpell.Name != MySpells.Wildfire.Name &&
-		Ultima.LastSpell.Name != MySpells.RookAutoturret.Name &&
-		Ultima.LastSpell.Name != MySpells.Promotion.Name &&
-		Ultima.LastSpell.Name != MySpells.SuppressiveFire.Name &&
-		Ultima.LastSpell.Name != MySpells.BishopAutoturret.Name &&
-		Ultima.LastSpell.Name != MySpells.Dismantle.Name &&
-		Ultima.LastSpell.Name != MySpells.GaussRound.Name &&
-		Ultima.LastSpell.Name != MySpells.RendMind.Name &&
-		Ultima.LastSpell.Name != MySpells.Hypercharge.Name &&
-		Ultima.LastSpell.Name != MySpells.Ricochet.Name)
+            if (Ultima.LastSpell.Name != MySpells.Heartbreak.Name &&
+			Ultima.LastSpell.Name != MySpells.LegGraze.Name &&
+			Ultima.LastSpell.Name != MySpells.Reassemble.Name &&
+			Ultima.LastSpell.Name != MySpells.QuickReload.Name &&
+			Ultima.LastSpell.Name != MySpells.RapidFire.Name &&
+			Ultima.LastSpell.Name != MySpells.Wildfire.Name &&
+			Ultima.LastSpell.Name != MySpells.RookAutoturret.Name &&
+			Ultima.LastSpell.Name != MySpells.BishopAutoturret.Name &&
+			Ultima.LastSpell.Name != MySpells.Dismantle.Name &&
+			Ultima.LastSpell.Name != MySpells.Hypercharge.Name &&
+			Ultima.LastSpell.Name != MySpells.Ricochet.Name &&
+			ActionResourceManager.Machinist.Ammo == 3)
             {
-                if (!Ultima.UltSettings.SingleTarget &&
-		    ActionManager.HasSpell(MySpells.Wildfire.Name) ||
-
-		    Ultima.UltSettings.SingleTarget &&
-		    Core.Player.CurrentTarget.CurrentHealth <= Core.Player.MaxHealth * 4 &&
-		    ActionManager.HasSpell(MySpells.Wildfire.Name) ||
-
-		    Ultima.UltSettings.SingleTarget &&
-		    Core.Player.CurrentTarget.CurrentHealth > Core.Player.MaxHealth * 4 &&
-		    ActionManager.HasSpell(MySpells.Wildfire.Name) &&
-		    !ActionManager.CanCast(MySpells.Wildfire.Name, Core.Player.CurrentTarget))
-                {
-                    return await MySpells.RapidFire.Cast();
-		}
-            }
+                return await MySpells.RapidFire.Cast();
+			}
             return false;
         }
 
@@ -416,13 +320,7 @@ namespace UltimaCR.Rotations
 
         private async Task<bool> Wildfire()
         {
-            if (Core.Player.CurrentTarget.CurrentHealth > Core.Player.MaxHealth * 4 &&
-		Core.Player.CurrentTarget.HasAura(MySpells.LeadShot.Name, true) &&
-		Core.Player.HasAura(MySpells.HotShot.Name) &&
-		!ActionManager.CanCast(MySpells.Hypercharge.Name, Core.Player) &&
-		!ActionManager.CanCast(MySpells.CrossClass.RagingStrikes.Name, Core.Player) &&
-		!ActionManager.CanCast(MySpells.CrossClass.HawksEye.Name, Core.Player) &&
-		!ActionManager.CanCast(MySpells.CrossClass.BloodForBlood.Name, Core.Player))
+            if (Core.Player.HasAura(MySpells.RapidFire.Name))
             {
                 return await MySpells.Wildfire.Cast();
             }
@@ -537,8 +435,7 @@ namespace UltimaCR.Rotations
 
         private async Task<bool> GaussBarrel()
         {
-            if (Ultima.UltSettings.MachinistGaussBarrel &&
-                !Core.Player.HasAura(858))
+            if (!ActionResourceManager.Machinist.GaussBarrel)
             {
                 return await MySpells.GaussBarrel.Cast();
             }
@@ -547,39 +444,21 @@ namespace UltimaCR.Rotations
 
         private async Task<bool> GaussRound()
         {
-            if (Ultima.LastSpell.Name != MySpells.CrossClass.RagingStrikes.Name &&
-		Ultima.LastSpell.Name != MySpells.CrossClass.HawksEye.Name &&
-		Ultima.LastSpell.Name != MySpells.CrossClass.BloodForBlood.Name &&
-		Ultima.LastSpell.Name != MySpells.Reload.Name &&
+            if (Ultima.LastSpell.Name != MySpells.Reload.Name &&
 		Ultima.LastSpell.Name != MySpells.Heartbreak.Name &&
 		Ultima.LastSpell.Name != MySpells.LegGraze.Name &&
 		Ultima.LastSpell.Name != MySpells.Reassemble.Name &&
-		Ultima.LastSpell.Name != MySpells.Blank.Name &&
-		Ultima.LastSpell.Name != MySpells.FootGraze.Name &&
 		Ultima.LastSpell.Name != MySpells.QuickReload.Name &&
 		Ultima.LastSpell.Name != MySpells.RapidFire.Name &&
-		Ultima.LastSpell.Name != MySpells.HeadGraze.Name &&
 		Ultima.LastSpell.Name != MySpells.Wildfire.Name &&
 		Ultima.LastSpell.Name != MySpells.RookAutoturret.Name &&
-		Ultima.LastSpell.Name != MySpells.Promotion.Name &&
-		Ultima.LastSpell.Name != MySpells.SuppressiveFire.Name &&
 		Ultima.LastSpell.Name != MySpells.BishopAutoturret.Name &&
 		Ultima.LastSpell.Name != MySpells.Dismantle.Name &&
-		Ultima.LastSpell.Name != MySpells.RendMind.Name &&
 		Ultima.LastSpell.Name != MySpells.Hypercharge.Name &&
-		Ultima.LastSpell.Name != MySpells.Ricochet.Name)
-            {
-                if (!Ultima.UltSettings.SingleTarget ||
-
-		    Ultima.UltSettings.SingleTarget &&
-		    Core.Player.CurrentTarget.CurrentHealth <= Core.Player.MaxHealth * 4 ||
-
-		    Ultima.UltSettings.SingleTarget &&
-		    Core.Player.CurrentTarget.CurrentHealth > Core.Player.MaxHealth * 4 &&
-		    !ActionManager.CanCast(MySpells.Wildfire.Name, Core.Player))
-                {
-                    return await MySpells.GaussRound.Cast();
-		}
+		Ultima.LastSpell.Name != MySpells.Ricochet.Name &&
+		!Core.Player.HasAura(MySpells.Reassemble.Name))
+        	{
+                return await MySpells.GaussRound.Cast();
             }
             return false;
         }
@@ -591,11 +470,7 @@ namespace UltimaCR.Rotations
 
         private async Task<bool> Hypercharge()
         {
-            if (Ultima.UltSettings.MachinistHypercharge &&
-		Core.Player.CurrentTarget.CurrentHealth > Core.Player.MaxHealth * 2 &&
-		!Core.Player.CurrentTarget.HasAura(695) &&
-		Core.Player.HasTarget &&
-		Core.Player.InCombat)
+            if (Core.Player.HasAura(MySpells.RapidFire.Name))
             {
                 return await MySpells.Hypercharge.Cast();
             }
@@ -604,49 +479,61 @@ namespace UltimaCR.Rotations
 
         private async Task<bool> Ricochet()
         {
-            if (Ultima.LastSpell.Name != MySpells.CrossClass.RagingStrikes.Name &&
-		Ultima.LastSpell.Name != MySpells.CrossClass.HawksEye.Name &&
-		Ultima.LastSpell.Name != MySpells.CrossClass.BloodForBlood.Name &&
-		Ultima.LastSpell.Name != MySpells.Reload.Name &&
-		Ultima.LastSpell.Name != MySpells.Heartbreak.Name &&
-		Ultima.LastSpell.Name != MySpells.LegGraze.Name &&
-		Ultima.LastSpell.Name != MySpells.Reassemble.Name &&
-		Ultima.LastSpell.Name != MySpells.Blank.Name &&
-		Ultima.LastSpell.Name != MySpells.FootGraze.Name &&
-		Ultima.LastSpell.Name != MySpells.QuickReload.Name &&
-		Ultima.LastSpell.Name != MySpells.RapidFire.Name &&
-		Ultima.LastSpell.Name != MySpells.HeadGraze.Name &&
-		Ultima.LastSpell.Name != MySpells.Wildfire.Name &&
-		Ultima.LastSpell.Name != MySpells.RookAutoturret.Name &&
-		Ultima.LastSpell.Name != MySpells.Promotion.Name &&
-		Ultima.LastSpell.Name != MySpells.SuppressiveFire.Name &&
-		Ultima.LastSpell.Name != MySpells.BishopAutoturret.Name &&
-		Ultima.LastSpell.Name != MySpells.Dismantle.Name &&
-		Ultima.LastSpell.Name != MySpells.GaussRound.Name &&
-		Ultima.LastSpell.Name != MySpells.RendMind.Name &&
-		Ultima.LastSpell.Name != MySpells.Hypercharge.Name)
-            {
-                if (!Ultima.UltSettings.SingleTarget ||
-
-		    Ultima.UltSettings.SingleTarget &&
-		    Core.Player.CurrentTarget.CurrentHealth <= Core.Player.MaxHealth * 4 ||
-
-	 	    Ultima.UltSettings.SingleTarget &&
-		    Core.Player.CurrentTarget.CurrentHealth > Core.Player.MaxHealth * 4 &&
-		    !ActionManager.CanCast(MySpells.Wildfire.Name, Core.Player))
-                {
+            if ((!Core.Player.HasAura("Cleaner Shot") &&
+				Core.Player.HasAura(MySpells.Reassemble.Name)) ||
+				Core.Player.CurrentTarget.HasAura(MySpells.Wildfire.Name, true) &&
+				!Core.Player.HasAura(MySpells.Reassemble.Name))
+    		{
                     return await MySpells.Ricochet.Cast();
-		}
-            }
+			}
             return false;
         }
 
+		private async Task<bool> SummonChocobo()
+		{
+			if (!ChocoboManager.Summoned)
+            {
+                ChocoboManager.ForceSummon();
+				return true;
+            }
+
+            if (ChocoboManager.Summoned)
+            {
+				if (ChocoboManager.Stance != CompanionStance.Healer)
+                {
+                    ChocoboManager.HealerStance();
+                    return true;
+                }
+			}
+
+			return false;
+		}
+
+		private async Task<bool> Cooldown()
+        {
+            if (!ActionManager.CanCast(MySpells.QuickReload.Name,Core.Player) &&
+			ActionResourceManager.Machinist.Heat >= 80 &&
+			Ultima.LastSpell.Name != MySpells.QuickReload.Name)
+            {
+                return await MySpells.Cooldown.Cast();
+            }
+            return false;
+        }
 
         #endregion
 
         #region Cross Class Spells
 
         #region Archer
+
+		private async Task<bool> SecondWind()
+        {
+            if (Core.Player.CurrentHealthPercent <= 40)
+            {
+                return await MySpells.CrossClass.SecondWind.Cast();
+            }
+            return false;
+        }
 
         private async Task<bool> RagingStrikes()
         {

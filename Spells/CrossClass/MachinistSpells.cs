@@ -134,6 +134,24 @@ namespace UltimaCR.Spells.CrossClass
                                });
                 }
             }
+            private Spell _secondwind;
+            public Spell SecondWind
+            {
+                get
+                {
+                    return _secondwind ??
+                           (_secondwind =
+                               new Spell
+                               {
+                                   Name = "Second Wind",
+                                   ID = 7541,
+                                   Level = 8,
+                                   GCDType = GCDType.On,
+                                   SpellType = SpellType.Damage,
+                                   CastType = CastType.Self
+                               });
+                }
+            }
             #endregion
         }
     }
