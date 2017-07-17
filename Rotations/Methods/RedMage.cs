@@ -24,33 +24,63 @@ namespace UltimaCR.Rotations
 
         private async Task<bool> Jolt()
         {
-            if (!ActionManager.HasSpell(MySpells.Redoublement.Name) &&
-            !ActionManager.HasSpell(MySpells.Zwerchhau.Name))
+            if (ActionResourceManager.RedMage.WhiteMana < 80 ||
+                ActionResourceManager.RedMage.BlackMana < 80 ||
+                ActionResourceManager.RedMage.WhiteMana == ActionResourceManager.RedMage.BlackMana)
             {
-                return await MySpells.Jolt.Cast();
-            }
-            else
-            {
-                if (ActionManager.HasSpell(MySpells.Redoublement.Name) && 
-                (ActionManager.LastSpell.Name != MySpells.Zwerchhau.Name ||
-                ActionManager.LastSpell.Name != MySpells.Riposte.Name))
+                if (!ActionManager.HasSpell(MySpells.Redoublement.Name) &&
+                    !ActionManager.HasSpell(MySpells.Zwerchhau.Name))
                 {
                     return await MySpells.Jolt.Cast();
                 }
                 else
                 {
-                    if (ActionManager.LastSpell.Name != MySpells.Riposte.Name)
+                    if (ActionManager.HasSpell(MySpells.Redoublement.Name) && 
+                        (Ultima.LastSpell.Name != MySpells.Zwerchhau.Name ||
+                        Ultima.LastSpell.Name != MySpells.Riposte.Name))
                     {
                         return await MySpells.Jolt.Cast();
+                    }
+                    else
+                    {
+                        if (Ultima.LastSpell.Name != MySpells.Riposte.Name)
+                        {
+                            return await MySpells.Jolt.Cast();
+                        }
                     }
                 }
             }
             return false;
         }
 
+        private async Task<bool> Vercure()
+        {
+            if (PartyManager.IsInParty)
+            {
+                var target = Helpers.HealManager.FirstOrDefault(hm =>
+                    hm.CurrentHealthPercent <= 50);
+
+                if (target != null)
+                {
+                    return await MySpells.Vercure.Cast(target);
+                }
+            }
+            else
+            {
+
+                if (Core.Player.CurrentHealthPercent < 50)
+                {
+                    return await MySpells.Vercure.Cast();
+                }
+
+            }
+            
+            return false;
+        }
+
         private async Task<bool> Fleche()
         {
-            if (ActionManager.LastSpell.Name != MySpells.Acceleration.Name)
+            if (Ultima.LastSpell.Name != MySpells.Acceleration.Name)
             {
                 return await MySpells.Fleche.Cast();
             }
@@ -59,7 +89,7 @@ namespace UltimaCR.Rotations
 
         private async Task<bool> Acceleration()
         {
-            if (ActionManager.LastSpell.Name != MySpells.Fleche.Name)
+            if (Ultima.LastSpell.Name != MySpells.Fleche.Name)
             {
                 return await MySpells.Acceleration.Cast();
             }
@@ -88,14 +118,14 @@ namespace UltimaCR.Rotations
                 else
                 {
                     if (ActionManager.HasSpell(MySpells.Redoublement.Name) && 
-                    (ActionManager.LastSpell.Name != MySpells.Zwerchhau.Name ||
-                    ActionManager.LastSpell.Name != MySpells.Riposte.Name))
+                    (Ultima.LastSpell.Name != MySpells.Zwerchhau.Name ||
+                    Ultima.LastSpell.Name != MySpells.Riposte.Name))
                     {
                         return await MySpells.Verthunder.Cast();
                     }
                     else
                     {
-                        if (ActionManager.LastSpell.Name != MySpells.Riposte.Name)
+                        if (Ultima.LastSpell.Name != MySpells.Riposte.Name)
                         {
                             return await MySpells.Verthunder.Cast();
                         }
@@ -118,14 +148,14 @@ namespace UltimaCR.Rotations
                 else
                 {
                     if (ActionManager.HasSpell(MySpells.Redoublement.Name) && 
-                    (ActionManager.LastSpell.Name != MySpells.Zwerchhau.Name ||
-                    ActionManager.LastSpell.Name != MySpells.Riposte.Name))
+                    (Ultima.LastSpell.Name != MySpells.Zwerchhau.Name ||
+                    Ultima.LastSpell.Name != MySpells.Riposte.Name))
                     {
                         return await MySpells.Veraero.Cast();
                     }
                     else
                     {
-                        if (ActionManager.LastSpell.Name != MySpells.Riposte.Name)
+                        if (Ultima.LastSpell.Name != MySpells.Riposte.Name)
                         {
                             return await MySpells.Veraero.Cast();
                         }
@@ -145,14 +175,14 @@ namespace UltimaCR.Rotations
             else
             {
                 if (ActionManager.HasSpell(MySpells.Redoublement.Name) && 
-                (ActionManager.LastSpell.Name != MySpells.Zwerchhau.Name ||
-                ActionManager.LastSpell.Name != MySpells.Riposte.Name))
+                (Ultima.LastSpell.Name != MySpells.Zwerchhau.Name ||
+                Ultima.LastSpell.Name != MySpells.Riposte.Name))
                 {
                     return await MySpells.Verstone.Cast();
                 }
                 else
                 {
-                    if (ActionManager.LastSpell.Name != MySpells.Riposte.Name)
+                    if (Ultima.LastSpell.Name != MySpells.Riposte.Name)
                     {
                         return await MySpells.Verstone.Cast();
                     }
@@ -171,14 +201,14 @@ namespace UltimaCR.Rotations
             else
             {
                 if (ActionManager.HasSpell(MySpells.Redoublement.Name) && 
-                (ActionManager.LastSpell.Name != MySpells.Zwerchhau.Name ||
-                ActionManager.LastSpell.Name != MySpells.Riposte.Name))
+                (Ultima.LastSpell.Name != MySpells.Zwerchhau.Name ||
+                Ultima.LastSpell.Name != MySpells.Riposte.Name))
                 {
                     return await MySpells.Verfire.Cast();
                 }
                 else
                 {
-                    if (ActionManager.LastSpell.Name != MySpells.Riposte.Name)
+                    if (Ultima.LastSpell.Name != MySpells.Riposte.Name)
                     {
                         return await MySpells.Verfire.Cast();
                     }
@@ -201,8 +231,8 @@ namespace UltimaCR.Rotations
             else
             {
                 if (ActionManager.HasSpell(MySpells.Redoublement.Name) && 
-                (ActionResourceManager.RedMage.WhiteMana > 80 &&
-                ActionResourceManager.RedMage.BlackMana > 80 &&
+                (ActionResourceManager.RedMage.WhiteMana >= 80 &&
+                ActionResourceManager.RedMage.BlackMana >= 80 &&
                 ActionResourceManager.RedMage.WhiteMana != ActionResourceManager.RedMage.BlackMana) ||
                 (ActionResourceManager.RedMage.WhiteMana == 100 &&
                 ActionResourceManager.RedMage.BlackMana == 100))
@@ -224,7 +254,7 @@ namespace UltimaCR.Rotations
 
         private async Task<bool> Zwerchhau()
         {
-            if (ActionManager.LastSpell.Name == MySpells.Riposte.Name)
+            if (Ultima.LastSpell.Name == MySpells.Riposte.Name)
             {
                 return await MySpells.Zwerchhau.Cast();
             }
@@ -233,7 +263,7 @@ namespace UltimaCR.Rotations
 
         private async Task<bool> Redoublement()
         {
-            if (ActionManager.LastSpell.Name == MySpells.Zwerchhau.Name)
+            if (Ultima.LastSpell.Name == MySpells.Zwerchhau.Name)
             {
                 return await MySpells.Redoublement.Cast();
             }

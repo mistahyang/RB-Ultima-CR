@@ -282,5 +282,24 @@ namespace UltimaCR.Spells.Main
                            });
             }
         }
+        //7514
+        private Spell _vercure;
+        public Spell Vercure
+        {
+            get
+            {
+                return _vercure ??
+                       (_vercure =
+                           new Spell
+                           {
+                               Name = "Vercure",
+                               ID = 7514,
+                               Level = 54,
+                               GCDType = GCDType.On,
+                               SpellType = SpellType.Heal,
+                               CastType = CastType.Target
+                           });
+            }
+        }
     }
 }
