@@ -47,9 +47,15 @@ namespace UltimaCR.Rotations
             }
             if (Ultima.UltSettings.MultiTarget)
             {
-            	if (await CircleOfScorn()) return true;
+				if (await SummonChocobo()) return true;
+            	if (await Requiescat()) return true;
+				if (await HolySpirit()) return true;
+				if (await FightOrFlight()) return true;
+				if (await ShieldLob()) return true;
+				if (await TotalEclipse()) return true;
+				if (await SpiritsWithin()) return true;
 				if (await ShieldSwipe()) return true;
-            	if (await RoyalAuthority()) return true;
+            	if (await CircleOfScorn()) return true;
             	if (await GoringBlade()) return true;
             	if (await RageOfHalone()) return true;
             	if (await RiotBlade1()) return true;

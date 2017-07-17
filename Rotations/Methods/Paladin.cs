@@ -1,9 +1,13 @@
-﻿using ff14bot;
+﻿using System;
+using Buddy.Coroutines;
+using ff14bot;
+using ff14bot.Enums;
 using ff14bot.Managers;
 using System.Linq;
 using System.Threading.Tasks;
+using UltimaCR.Spells;
 using UltimaCR.Spells.Main;
-using System;
+using ff14bot.Objects;
 
 namespace UltimaCR.Rotations
 {
@@ -33,6 +37,26 @@ namespace UltimaCR.Rotations
             }
             return false;
         }
+
+        private async Task<bool> SummonChocobo()
+		{
+			if (!ChocoboManager.Summoned)
+            {
+                ChocoboManager.ForceSummon();
+				return true;
+            }
+
+            if (ChocoboManager.Summoned)
+            {
+				if (ChocoboManager.Stance != CompanionStance.Healer)
+                {
+                    ChocoboManager.HealerStance();
+                    return true;
+                }
+			}
+
+			return false;
+		}
 
         private async Task<bool> Anticipation()
         {

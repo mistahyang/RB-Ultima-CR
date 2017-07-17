@@ -24,7 +24,28 @@ namespace UltimaCR.Rotations
 
         private async Task<bool> Jolt()
         {
-            return await MySpells.Jolt.Cast();
+            if (!ActionManager.HasSpell(MySpells.Redoublement.Name) &&
+            !ActionManager.HasSpell(MySpells.Zwerchhau.Name))
+            {
+                return await MySpells.Jolt.Cast();
+            }
+            else
+            {
+                if (ActionManager.HasSpell(MySpells.Redoublement.Name) && 
+                (ActionManager.LastSpell.Name != MySpells.Zwerchhau.Name ||
+                ActionManager.LastSpell.Name != MySpells.Riposte.Name))
+                {
+                    return await MySpells.Jolt.Cast();
+                }
+                else
+                {
+                    if (ActionManager.LastSpell.Name != MySpells.Riposte.Name)
+                    {
+                        return await MySpells.Jolt.Cast();
+                    }
+                }
+            }
+            return false;
         }
 
         private async Task<bool> Fleche()
@@ -59,7 +80,27 @@ namespace UltimaCR.Rotations
             if (Core.Player.HasAura("Dualcast") &&
             ActionResourceManager.RedMage.BlackMana <= ActionResourceManager.RedMage.WhiteMana)
             {
-                return await MySpells.Verthunder.Cast();
+                if (!ActionManager.HasSpell(MySpells.Redoublement.Name) &&
+                !ActionManager.HasSpell(MySpells.Zwerchhau.Name))
+                {
+                    return await MySpells.Verthunder.Cast();
+                }
+                else
+                {
+                    if (ActionManager.HasSpell(MySpells.Redoublement.Name) && 
+                    (ActionManager.LastSpell.Name != MySpells.Zwerchhau.Name ||
+                    ActionManager.LastSpell.Name != MySpells.Riposte.Name))
+                    {
+                        return await MySpells.Verthunder.Cast();
+                    }
+                    else
+                    {
+                        if (ActionManager.LastSpell.Name != MySpells.Riposte.Name)
+                        {
+                            return await MySpells.Verthunder.Cast();
+                        }
+                    }
+                }
             }
             return false;
         }
@@ -69,36 +110,114 @@ namespace UltimaCR.Rotations
             if (Core.Player.HasAura("Dualcast") &&
             ActionResourceManager.RedMage.WhiteMana <= ActionResourceManager.RedMage.BlackMana)
             {
-                return await MySpells.Veraero.Cast();
+                if (!ActionManager.HasSpell(MySpells.Redoublement.Name) &&
+                !ActionManager.HasSpell(MySpells.Zwerchhau.Name))
+                {
+                    return await MySpells.Veraero.Cast();
+                }
+                else
+                {
+                    if (ActionManager.HasSpell(MySpells.Redoublement.Name) && 
+                    (ActionManager.LastSpell.Name != MySpells.Zwerchhau.Name ||
+                    ActionManager.LastSpell.Name != MySpells.Riposte.Name))
+                    {
+                        return await MySpells.Veraero.Cast();
+                    }
+                    else
+                    {
+                        if (ActionManager.LastSpell.Name != MySpells.Riposte.Name)
+                        {
+                            return await MySpells.Veraero.Cast();
+                        }
+                    }
+                }
             }
             return false;
         }
 
         private async Task<bool> Verstone()
         {
-            if (ActionManager.CanCast(MySpells.Verstone.Name,Core.Player.CurrentTarget))
+            if (!ActionManager.HasSpell(MySpells.Redoublement.Name) &&
+            !ActionManager.HasSpell(MySpells.Zwerchhau.Name))
             {
                 return await MySpells.Verstone.Cast();
+            }
+            else
+            {
+                if (ActionManager.HasSpell(MySpells.Redoublement.Name) && 
+                (ActionManager.LastSpell.Name != MySpells.Zwerchhau.Name ||
+                ActionManager.LastSpell.Name != MySpells.Riposte.Name))
+                {
+                    return await MySpells.Verstone.Cast();
+                }
+                else
+                {
+                    if (ActionManager.LastSpell.Name != MySpells.Riposte.Name)
+                    {
+                        return await MySpells.Verstone.Cast();
+                    }
+                }
             }
             return false;
         }
 
         private async Task<bool> Verfire()
         {
-            if (ActionManager.CanCast(MySpells.Verfire.Name,Core.Player.CurrentTarget))
+            if (!ActionManager.HasSpell(MySpells.Redoublement.Name) &&
+            !ActionManager.HasSpell(MySpells.Zwerchhau.Name))
             {
                 return await MySpells.Verfire.Cast();
+            }
+            else
+            {
+                if (ActionManager.HasSpell(MySpells.Redoublement.Name) && 
+                (ActionManager.LastSpell.Name != MySpells.Zwerchhau.Name ||
+                ActionManager.LastSpell.Name != MySpells.Riposte.Name))
+                {
+                    return await MySpells.Verfire.Cast();
+                }
+                else
+                {
+                    if (ActionManager.LastSpell.Name != MySpells.Riposte.Name)
+                    {
+                        return await MySpells.Verfire.Cast();
+                    }
+                }
             }
             return false;
         }
 
         private async Task<bool> Riposte()
         {
-            if (ActionResourceManager.RedMage.WhiteMana > 80 &&
-            ActionResourceManager.RedMage.BlackMana > 80 &&
-            ActionResourceManager.RedMage.WhiteMana != ActionResourceManager.RedMage.BlackMana)
+            if (!ActionManager.HasSpell(MySpells.Redoublement.Name) &&
+            !ActionManager.HasSpell(MySpells.Zwerchhau.Name))
             {
-                return await MySpells.Riposte.Cast();
+                if (ActionResourceManager.RedMage.WhiteMana > 30 &&
+                ActionResourceManager.RedMage.BlackMana > 30)
+                {
+                    return await MySpells.Riposte.Cast();
+                }
+            }
+            else
+            {
+                if (ActionManager.HasSpell(MySpells.Redoublement.Name) && 
+                (ActionResourceManager.RedMage.WhiteMana > 80 &&
+                ActionResourceManager.RedMage.BlackMana > 80 &&
+                ActionResourceManager.RedMage.WhiteMana != ActionResourceManager.RedMage.BlackMana) ||
+                (ActionResourceManager.RedMage.WhiteMana == 100 &&
+                ActionResourceManager.RedMage.BlackMana == 100))
+                {
+                    return await MySpells.Riposte.Cast();
+                }
+                else
+                {
+                    if (!ActionManager.HasSpell(MySpells.Redoublement.Name) &&
+                    ActionResourceManager.RedMage.WhiteMana > 55 &&
+                    ActionResourceManager.RedMage.BlackMana > 55)
+                    {
+                        return await MySpells.Riposte.Cast();
+                    }
+                }
             }
             return false;
         }
@@ -129,6 +248,26 @@ namespace UltimaCR.Rotations
             }
             return false;
         }
+
+        private async Task<bool> SummonChocobo()
+		{
+			if (!ChocoboManager.Summoned)
+            {
+                ChocoboManager.ForceSummon();
+				return true;
+            }
+
+            if (ChocoboManager.Summoned)
+            {
+				if (ChocoboManager.Stance != CompanionStance.Healer)
+                {
+                    ChocoboManager.HealerStance();
+                    return true;
+                }
+			}
+
+			return false;
+		}
 
         #endregion
     }

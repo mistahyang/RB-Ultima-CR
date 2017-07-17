@@ -12,10 +12,10 @@ namespace UltimaCR.Rotations
                 if (await LifeSurge()) return true;*/
 
                 if (await Fleche()) return true;
-                if (await Acceleration()) return true;
                 if (await Redoublement()) return true;
                 if (await Zwerchhau()) return true;
                 if (await Riposte()) return true;
+                if (await Acceleration()) return true;
                 if (await Verstone()) return true;
                 if (await Verfire()) return true;
                 if (await Verthunder()) return true;
@@ -24,12 +24,11 @@ namespace UltimaCR.Rotations
             }
             if (Ultima.UltSettings.SingleTarget)
             {
-
                 if (await Fleche()) return true;
-                if (await Acceleration()) return true;
                 if (await Redoublement()) return true;
                 if (await Zwerchhau()) return true;
                 if (await Riposte()) return true;
+                if (await Acceleration()) return true;
                 if (await Verstone()) return true;
                 if (await Verfire()) return true;
                 if (await Verthunder()) return true;
@@ -38,12 +37,12 @@ namespace UltimaCR.Rotations
             }
             if (Ultima.UltSettings.MultiTarget)
             {
-
+                if (await SummonChocobo()) return true;
                 if (await Fleche()) return true;
-                if (await Acceleration()) return true;
                 if (await Redoublement()) return true;
                 if (await Zwerchhau()) return true;
                 if (await Riposte()) return true;
+                if (await Acceleration()) return true;
                 if (await Verstone()) return true;
                 if (await Verfire()) return true;
                 if (await Verthunder()) return true;

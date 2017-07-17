@@ -352,6 +352,23 @@ namespace UltimaCR
             return false;
         }
 
+        public static async Task<bool> FoodBuff()
+        {
+            if (!Core.Player.HasAura("Well Fed"))
+            {
+                foreach (BagSlot a in InventoryManager.FilledSlots)
+                {
+                    if (a.Name == "Buffalo Milk" ||
+                        a.Name == "Yak Milk")
+                    {
+                        a.UseItem();
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
         #endregion
 
         #region Ultima LastSpell
