@@ -10,6 +10,7 @@ namespace UltimaCR.Rotations
             if (await HallowedGround()) return true;
             if (await Rampart()) return true;
             if (await Sentinel()) return true;
+            if (await Bulwark()) return true;
             if (await Convalescence()) return true;
 		    return await Sheltron();
         }

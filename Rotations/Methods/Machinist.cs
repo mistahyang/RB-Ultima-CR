@@ -55,7 +55,8 @@ namespace UltimaCR.Rotations
         {
             if (!ActionManager.CanCast(MySpells.Reload.Name, Core.Player) &&
 			ActionResourceManager.Machinist.Ammo < 3 &&
-			ActionResourceManager.Machinist.Heat >= 60)
+			ActionResourceManager.Machinist.Heat >= 60 &&
+			Ultima.LastSpell.Name != MySpells.Cooldown.Name)
             {
                 return await MySpells.QuickReload.Cast();
             }

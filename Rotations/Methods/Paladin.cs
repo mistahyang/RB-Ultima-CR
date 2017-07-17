@@ -36,7 +36,8 @@ namespace UltimaCR.Rotations
 
         private async Task<bool> Anticipation()
         {
-	    	if (Core.Player.CurrentHealthPercent <= 65 && Helpers.EnemiesNearPlayer(6) >= 3)
+	    	if ((Core.Player.CurrentHealthPercent <= 65 && Helpers.EnemiesNearPlayer(6) >= 3) ||
+            Core.Player.CurrentHealthPercent < 50)
 	    	{
 				return await MySpells.CrossClass.Anticipation.Cast(); 
 	    	}
@@ -213,7 +214,8 @@ namespace UltimaCR.Rotations
 
         private async Task<bool> Sentinel()
         {
-            if (Core.Player.CurrentHealthPercent <= 40 && !Core.Player.HasAura(MySpells.CrossClass.Rampart.Name,true))
+            if (Core.Player.CurrentHealthPercent <= 40 && 
+            !Core.Player.HasAura(MySpells.CrossClass.Rampart.Name,true))
 	    	{
 				return await MySpells.Sentinel.Cast(); 
 	    	}
@@ -227,7 +229,11 @@ namespace UltimaCR.Rotations
 
         private async Task<bool> Bulwark()
         {
-            return await MySpells.Bulwark.Cast();
+            if (Core.Player.CurrentHealthPercent <= 50)
+	    	{
+				return await MySpells.Bulwark.Cast(); 
+	    	}
+	    	return false;
         }
 
         private async Task<bool> CircleOfScorn()
